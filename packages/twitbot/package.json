@@ -1,0 +1,49 @@
+{
+  "name": "twitbot",
+  "version": "0.3.0-beta16",
+  "description": "Twitter bots for cli..",
+  "main": "./dist/index.js",
+  "scripts": {
+    "prebuild": "rimraf ./dist",
+    "prepublish": "npm run build",
+    "build": "babel ./src --out-dir ./dist",
+    "test": "xo ./src "
+  },
+  "bin": {
+    "twitbot": "./bin/twitbot"
+  },
+  "xo": {
+    "esnext": true,
+    "semicolon": false
+  },
+  "preferGlobal": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/c0b41/twitbot.git"
+  },
+  "keywords": [
+    "twitter",
+    "bots",
+    "cli",
+    "follow"
+  ],
+  "author": "Ayhan <cobaimelan@protonmail.ch> (http://www.github.com/c0b41)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/c0b41/twitbot/issues"
+  },
+  "homepage": "https://github.com/c0b41/twitbot#readme",
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "object.omit": "^2.0.0",
+    "twitbot-cli": "0.1.0-beta15",
+    "twitbot-core": "0.1.0-beta5"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-plugin-add-module-exports": "^0.1.4",
+    "babel-preset-es2015": "^6.9.0",
+    "rimraf": "^2.5.2",
+    "xo": "^0.12.1"
+  }
+}

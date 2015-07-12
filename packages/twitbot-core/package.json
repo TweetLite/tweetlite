@@ -1,0 +1,61 @@
+{
+  "name": "twitbot-core",
+  "version": "0.1.0-beta5",
+  "description": "twitbot-core package",
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "rimraf ./dist",
+    "prepublish": "npm run build",
+    "build": "babel ./src --out-dir ./dist",
+    "test": "xo ./src && ava ./test"
+  },
+  "xo": {
+    "esnext": true,
+    "semicolon": false,
+    "rules": {
+      "camelcase": [
+        2,
+        {
+          "properties": "never"
+        }
+      ]
+    }
+  },
+  "ava": {
+    "require": [
+      "babel-register"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/c0b41/twitbot.git"
+  },
+  "keywords": [
+    "twitbot",
+    "twitbot-cli"
+  ],
+  "author": "c0b41",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/c0b41/twitbot/issues"
+  },
+  "homepage": "https://github.com/c0b41/twitbot#readme",
+  "dependencies": {
+    "babel-polyfill": "^6.9.1",
+    "debug": "^2.2.0",
+    "lodash": "^4.13.1",
+    "promise-series2": "^1.1.0",
+    "twit": "^2.2.4"
+  },
+  "devDependencies": {
+    "ava": "^0.15.2",
+    "babel-cli": "^6.9.0",
+    "babel-plugin-add-module-exports": "^0.1.4",
+    "babel-plugin-syntax-async-functions": "^6.8.0",
+    "babel-plugin-transform-regenerator": "^6.9.0",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015": "^6.9.0",
+    "rimraf": "^2.5.2",
+    "xo": "^0.12.1"
+  }
+}
