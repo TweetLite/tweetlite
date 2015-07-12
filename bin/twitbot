@@ -1,0 +1,69 @@
+#! /usr/bin/env node
+var Config = require('./config.js');
+var parseArgs  = require('minimist');
+var fs = require('fs');
+var multiline = require('multiline');
+
+var conf = Config(),
+	args = parseArgs(process.argv);
+	cmd  = args._;
+var setwarning = multiline(function(){/*
+    Önce değeleri set etmelisin!
+    twitbot config set key 324325235235
+    twitbot config set keysecre 324325235235
+*/});
+
+function keycheck(){
+	if(!conf.get('key') || !conf.get('keysecret')){
+		return false;
+	}else{
+		return true;
+	}
+}
+
+
+if(cmd[2] == 'config'){
+	if(cmd[3] == 'set'){
+		if(cmd[4] || cmd[5]){
+			var obj ={};
+			obj[cmd[4]]=cmd[5];
+			conf.set(obj);
+		}
+
+	}else if(cmd[3] == 'get'){
+		if(cmd[4]){
+			var key = cmd[4];
+			if(conf.get(key)){
+				console.log(conf.get(key));
+			}else{
+				console.log('bulamadık');
+			}
+
+		}
+
+	}else{
+		console.log('what the fuck!');
+	}
+}else{
+	if(args.h || args.help){
+		console.log(fs.readFileSync(__dirname+'/man', "utf8"));
+	}else if(args.n || args.name){
+		if(!keycheck()){
+			console.log(setwarning);
+			return;
+		}else{
+			console.log(args.n || args.name);
+		}
+			
+	}
+}
+
+
+
+
+
+
+
+
+
+

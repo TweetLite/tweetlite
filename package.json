@@ -1,0 +1,36 @@
+{
+  "name": "twitbot",
+  "version": "0.1.0",
+  "description": "twitbot cli",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "twitbot": "./bin/twitbot"
+  },
+  "preferGlobal": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayhankuru/twitbot.git"
+  },
+  "keywords": [
+    "twit",
+    "bot",
+    "cli"
+  ],
+  "author": "Ayhan Kuru <ayhankuru@yandex.com.tr> (http://www.github.com/ayhankuru)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ayhankuru/twitbot/issues"
+  },
+  "homepage": "https://github.com/ayhankuru/twitbot#readme",
+  "dependencies": {
+    "bluebird": "^2.9.33",
+    "minimist": "^1.1.1",
+    "multiline": "^1.0.2",
+    "native-or-bluebird": "^1.2.0",
+    "twit": "^2.1.0",
+    "underscore": "^1.8.3"
+  }
+}

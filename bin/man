@@ -1,0 +1,8 @@
+  twitbot 
+
+
+  Komutlar ve kullanımları
+  	-n --name Film yada dizi izine belirtmeniz gerekmekte [ turkcealtyazi -t "dizi" -n "game of thrones" ]
+  	-t --type dizi veya Film türünü belirtmeniz gerekir [ turkcealtyazi -t "dizi" && "film" ]
+    -d --download  İndirme linkini geri döner [ turkcealtyazi -d && --download "http://"  ]
+    -h --help Yardım komutu, komutları listeler [ turkcealtyazi -h && --help]
