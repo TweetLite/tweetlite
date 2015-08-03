@@ -3,67 +3,43 @@ var Config = require('./config.js');
 var parseArgs  = require('minimist');
 var fs = require('fs');
 var multiline = require('multiline');
+var inquirer = require("inquirer");
+var qu = require('./question.js');
 
 var conf = Config(),
 	args = parseArgs(process.argv);
 	cmd  = args._;
+
 var setwarning = multiline(function(){/*
-    Önce değeleri set etmelisin!
-    twitbot config set key 324325235235
-    twitbot config set keysecre 324325235235
+    Önce hesap ayarlarını eklemelisin
+    twitbot new
 */});
 
-function keycheck(){
-	if(!conf.get('key') || !conf.get('keysecret')){
-		return false;
+
+if(cmd[2] == 'new'){ 
+
+	inquirer.prompt( qu.config, function( answers ) {
+	  conf.set(answers.username,answers);
+	});
+	
+}else if(cmd[2] == 'start') {
+	if(conf.list().length > 0){
+		var ques = qu.start;
+		ques[0].choices =conf.list();
+		inquirer.prompt(ques, function( answers ) {
+		    console.log( JSON.stringify(answers, null, "  ") );
+		});
 	}else{
-		return true;
+		console.log(setwarning);
 	}
-}
 
-
-if(cmd[2] == 'config'){
-	if(cmd[3] == 'set'){
-		if(cmd[4] || cmd[5]){
-			var obj ={};
-			obj[cmd[4]]=cmd[5];
-			conf.set(obj);
-		}
-
-	}else if(cmd[3] == 'get'){
-		if(cmd[4]){
-			var key = cmd[4];
-			if(conf.get(key)){
-				console.log(conf.get(key));
-			}else{
-				console.log('bulamadık');
-			}
-
-		}
-
-	}else{
-		console.log('what the fuck!');
-	}
+}else if(cmd[2] == 'flush') {
+	conf.flush();
 }else{
 	if(args.h || args.help){
 		console.log(fs.readFileSync(__dirname+'/man', "utf8"));
-	}else if(args.n || args.name){
-		if(!keycheck()){
-			console.log(setwarning);
-			return;
-		}else{
-			console.log(args.n || args.name);
-		}
-			
 	}
 }
-
-
-
-
-
-
-
 
 
 

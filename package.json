@@ -4,7 +4,7 @@
   "description": "twitbot cli",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "xo"
   },
   "bin": {
     "twitbot": "./bin/twitbot"
@@ -26,11 +26,16 @@
   },
   "homepage": "https://github.com/ayhankuru/twitbot#readme",
   "dependencies": {
-    "bluebird": "^2.9.33",
+    "async": "^1.4.0",
+    "bluebird": "^2.9.34",
+    "inquirer": "^0.9.0",
     "minimist": "^1.1.1",
     "multiline": "^1.0.2",
     "native-or-bluebird": "^1.2.0",
     "twit": "^2.1.0",
     "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "xo": "^0.5.0"
   }
 }
