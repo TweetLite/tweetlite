@@ -1,45 +1,40 @@
 #! /usr/bin/env node
-var Config = require('./config.js');
+
+var Config = require('../lib/config.js');
 var parseArgs  = require('minimist');
-var fs = require('fs');
-var multiline = require('multiline');
 var inquirer = require("inquirer");
-var qu = require('./question.js');
+var fs = require('fs');
+var qu = require('../lib/question.js');
 
 var conf = Config(),
 	args = parseArgs(process.argv);
 	cmd  = args._;
 
-var setwarning = multiline(function(){/*
-    Önce hesap ayarlarını eklemelisin
-    twitbot new
-*/});
-
-
-if(cmd[2] == 'new'){ 
-
-	inquirer.prompt( qu.config, function( answers ) {
-	  conf.set(answers.username,answers);
-	});
-	
-}else if(cmd[2] == 'start') {
-	if(conf.list().length > 0){
-		var ques = qu.start;
-		ques[0].choices =conf.list();
-		inquirer.prompt(ques, function( answers ) {
-		    console.log( JSON.stringify(answers, null, "  ") );
+switch(cmd[2]) {
+    case "new":
+         inquirer.prompt( qu.config, function( answers ) {
+			  conf.set(answers.username,answers);
 		});
-	}else{
-		console.log(setwarning);
-	}
-
-}else if(cmd[2] == 'flush') {
-	conf.flush();
-}else{
-	if(args.h || args.help){
-		console.log(fs.readFileSync(__dirname+'/man', "utf8"));
-	}
+        break;
+    case "start":
+        if(conf.list().length > 0){
+			var ques = qu.start;
+			ques[0].choices =conf.list();
+			inquirer.prompt(ques, function( answers ) {
+			    console.log( JSON.stringify(answers, null, "  ") );
+			});
+		}else{
+			
+		}
+        break;
+    case "blacklist":
+     	// todo line
+     	break;
+    case "flush":
+     	conf.flush();
+    	break;
+    default:
+       console.log(fs.readFileSync(__dirname+'/man', "utf8"));
 }
-
 
 
