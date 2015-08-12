@@ -1,0 +1,6 @@
+{
+	"Followers":"followers/ids",
+	"Search":"search/tweets",
+	"Friends":"friends/ids",
+	"UserSearch":"users/search"
+}
