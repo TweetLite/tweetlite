@@ -4,37 +4,123 @@ var Config = require('../lib/config.js');
 var parseArgs  = require('minimist');
 var inquirer = require("inquirer");
 var fs = require('fs');
+var _ = require('underscore');
+var chalk = require('chalk');
 var qu = require('../lib/question.js');
+var TT = require('../lib/twit.js');
+var util = require('../lib/util.js');
 
 var conf = Config(),
 	args = parseArgs(process.argv);
 	cmd  = args._;
 
 switch(cmd[2]) {
-    case "new":
+    case "new" :
+    case "N" :
          inquirer.prompt( qu.config, function( answers ) {
+              answers.blacklist=[],
+              answers.followerlist=[];
 			  conf.set(answers.username,answers);
 		});
         break;
     case "start":
+    case "S" :
         if(conf.list().length > 0){
-			var ques = qu.start;
-			ques[0].choices =conf.list();
-			inquirer.prompt(ques, function( answers ) {
-			    console.log( JSON.stringify(answers, null, "  ") );
-			});
-		}else{
-			
-		}
+            var ques = qu.start;
+            ques[0].choices =conf.list();
+            inquirer.prompt(ques, function( answers ) {
+                
+                var name = answers.select_account; 
+                var confd = conf.get(name);
+                var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
+                
+                T.FullSearch({q:answers.keyword,count:answers.takip_sayi, lang:confd.lang}).then(function(data){
+                      data = data.slice(0,answers.takip_sayi);
+
+                      var userlist = util.SelectData(data,confd.blacklist,'user');
+                      var twetlist = util.SelectData(data,confd.blacklist,'id_str');
+                       
+                      var dump =[T.FullUserFollow(userlist)];
+                      if(answers.favorite =="Evet"){
+                        dump.push(T.FullUserFavorite(twetlist));
+                      } 
+
+                      return Promise.all(dump);
+                }).then(function(data){
+                     var FollowCount = util.FollowCheck(data[0]);
+                     var FavoriteCount = util.FavoriteCheck(data[0]);
+                     console.log(chalk.green('  İşlemleri tamamladık..'));
+                     console.log(chalk.green('  '+FollowCount +' Kişi Takip Edildi.'));      
+                     console.log(chalk.green('  '+FavoriteCount +' Tweete Favori Eklendi.'));
+                }).catch(function(Err){
+                  console.log(Err);
+                });
+
+            });
+        }else{
+           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+        }
         break;
-    case "blacklist":
-     	// todo line
+    case "blacklist" :
+    case "B" :
+     	if(conf.list().length > 0){
+            var ques = qu.blacklist;
+            ques[0].choices =conf.list();
+            inquirer.prompt(ques, function( answers ) {
+                var name = answers.select_account;
+                var SearchName=answers.blacklist_username;
+                var confd = conf.get(name);
+                var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
+
+                T.FullUserSearch(SearchName).then(function(data){
+                  if(typeof(data) == "undefined"){
+                    console.log(chalk.red('Bu kullanıcı Adına ait hesap bulamadık, doğru yazdığınızdan emin olun.'));
+                  }else{
+                     confd.blacklist.push(data.id_str);
+                     confd.blacklist=_.uniq(confd.blacklist);
+                     conf.set(confd.username,confd);
+                     console.log(chalk.green(data.name+"'i yasaklılar listesine ekledik.."));
+                  }
+
+                });
+
+            });
+        }else{
+           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+        }
      	break;
-    case "flush":
+    case "flush" :
+    case "F" :
      	conf.flush();
     	break;
+    case "unfollow" :
+    case "U" :
+        if(conf.list().length > 0){
+            var ques = qu.accountlist;
+            ques[0].choices = conf.list();
+            inquirer.prompt(ques, function( answers ) {
+                 var name = answers.select_account; 
+                 var confd = conf.get(name);
+                 var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
+
+                 T.NotFollowingList().then(function(data){
+                   return T.FullUserDestroy(data);
+                 }).then(function(){
+                    console.log(chalk.green(name+"'i takip etmeyen kullanıcıları unfollow ettik.."));
+                 }).catch(function(err){
+                    console.log(err);
+                 });
+            });
+        }else{
+           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+        }
+        break;
+    case "help":
+    case "H":
+        util.help();
+        break;
     default:
-       console.log(fs.readFileSync(__dirname+'/man', "utf8"));
+    util.help();
 }
 
 
