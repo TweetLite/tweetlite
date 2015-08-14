@@ -1,6 +1,30 @@
 {
-	"Followers":"followers/ids",
-	"Search":"search/tweets",
-	"Friends":"friends/ids",
-	"UserSearch":"users/search"
+	"Followers":{
+		"path":"followers/ids",
+		"method" :"get"
+	},
+	"Search":{
+		"path":"search/tweets",
+		"method":"get"
+	},
+	"Friends":{
+		"path":"friends/ids",
+		"method":"get"
+	},
+	"UserSearch":{
+		"path":"users/search",
+		"method":"get"
+	},
+	"Favorite":{
+		"path":"favorites/create",
+		"method":"post"
+	},
+	"UserDestroy":{
+		"path":"friendships/destroy",
+		"method":"post"
+	},
+	"UserCreate":{
+		"path":"friendships/create",
+		"method":"post"
+	}
 }
