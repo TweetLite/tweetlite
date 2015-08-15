@@ -36,7 +36,7 @@ switch(cmd[2]) {
                 
                 T.FullSearch({q:answers.keyword,count:answers.takip_sayi, lang:confd.lang}).then(function(data){
                       data = data.slice(0,answers.takip_sayi);
-
+                       
                       var userlist = util.SelectData(data,confd.blacklist,'user');
                       var twetlist = util.SelectData(data,confd.blacklist,'id_str');
                        
@@ -46,12 +46,16 @@ switch(cmd[2]) {
                       } 
 
                       return Promise.all(dump);
-                }).then(function(data){
+                }).then(function(data){ 
                      var FollowCount = util.FollowCheck(data[0]);
-                     var FavoriteCount = util.FavoriteCheck(data[0]);
+                     if(data.length > 0){ 
+                        var FavoriteCount = util.FavoriteCheck(data[1]);
+                     }
                      console.log(chalk.green('  İşlemleri tamamladık..'));
-                     console.log(chalk.green('  '+FollowCount +' Kişi Takip Edildi.'));      
+                     console.log(chalk.green('  '+FollowCount +' Kişi Takip Edildi.')); 
+                     if(data.length > 0){     
                      console.log(chalk.green('  '+FavoriteCount +' Tweete Favori Eklendi.'));
+                     }
                 }).catch(function(Err){
                   console.log(Err);
                 });
