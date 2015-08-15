@@ -6,11 +6,12 @@ var inquirer = require("inquirer");
 var fs = require('fs');
 var _ = require('underscore');
 var chalk = require('chalk');
+var osHomedir = require('os-homedir');
 var qu = require('../lib/question.js');
 var TT = require('../lib/twit.js');
 var util = require('../lib/util.js');
 
-var conf = Config(),
+var conf = Config(osHomedir(),'.twitbotrc'),
 	args = parseArgs(process.argv);
 	cmd  = args._;
 
@@ -119,9 +120,25 @@ switch(cmd[2]) {
            console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
         }
         break;
+    case "version":
+    case "V":
+        console.log(require('../package.json').version);
+        break;
     case "help":
     case "H":
         util.help();
+        break;
+    case "list":
+    case "L":
+        if(conf.list().length > 0){
+          console.log(chalk.cyan('  Eklemiş olan hesaplar listesi'));
+          conf.list().forEach(function(name){
+            console.log(chalk.green('  '+name.toUpperCase()));
+          })
+
+        }else{
+           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+        }
         break;
     default:
     util.help();
