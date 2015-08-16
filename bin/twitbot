@@ -94,6 +94,39 @@ switch(cmd[2]) {
            console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
         }
      	break;
+    case "live" :
+    case "L" :
+        if(conf.list().length > 0){
+            var ques = qu.live;
+            ques[0].choices =conf.list();
+            inquirer.prompt(ques, function( answers ) {
+                var name = answers.select_account;
+                var confd = conf.get(name);
+                var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
+                var keywords=null;
+                if(typeof(answers.keywords)  !== "object"){
+                    keywords = answers.keywords.split(',');
+                }else{
+                    keywords = answers.keywords;
+                }
+
+                var stream = T.Stream({ track: keywords })
+                console.log('   '+chalk.bgCyan.bold.inverse.white('  TWİTBOT CANLI TAKİP ⚫ '));
+                stream.on('tweet', function (tweet) {
+                    T.StreamAction(tweet,confd.blacklist,confd.lang);
+                });
+
+                stream.on('disconnect', function (disconnectMessage) {
+                  console.log(chalk.red('Bağlantı koptuğu için canlı takip sonlandı'));
+                  process.exit(1);
+                });
+               
+
+            });
+        }else{
+           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+        }
+        break;
     case "flush" :
     case "F" :
      	conf.flush();
@@ -127,18 +160,6 @@ switch(cmd[2]) {
     case "help":
     case "H":
         util.help();
-        break;
-    case "list":
-    case "L":
-        if(conf.list().length > 0){
-          console.log(chalk.cyan('  Eklemiş olan hesaplar listesi'));
-          conf.list().forEach(function(name){
-            console.log(chalk.green('  '+name.toUpperCase()));
-          })
-
-        }else{
-           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
-        }
         break;
     default:
     util.help();
