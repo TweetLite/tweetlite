@@ -1,6 +1,6 @@
 {
   "name": "twitbot",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "twitbot cli",
   "main": "index.js",
   "scripts": {
@@ -31,9 +31,9 @@
     "chalk": "^1.1.0",
     "forEachAsync": "^3.0.0",
     "inquirer": "^0.9.0",
+    "libnotify": "^1.0.4",
     "minimist": "^1.1.1",
     "native-or-bluebird": "^1.2.0",
-    "notify-send": "^0.1.2",
     "os-homedir": "^1.0.1",
     "trayballoon": "^1.0.4",
     "twit": "^2.1.0",

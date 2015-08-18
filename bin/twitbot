@@ -115,7 +115,6 @@ switch(cmd[2]) {
     case "live" :
     case "L" :
         var notification = args.notification ? args.notification : null;
-        console.log(notification);
         if(conf.list().length > 0){
             var ques = qu.live;
             ques[0].choices =conf.list();
