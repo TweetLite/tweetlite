@@ -57,6 +57,11 @@ switch(cmd[2]) {
                      if(data.length > 0){     
                      console.log(chalk.green('  '+FavoriteCount +' Tweete Favori Eklendi.'));
                      }
+
+                     return T.Blocks();
+                }).then(function(blacklist){
+                    confd.blacklist=_.uniq(blacklist.ids);
+                    conf.set(confd.username,confd);
                 }).catch(function(Err){
                   console.log(Err);
                 });
@@ -77,16 +82,29 @@ switch(cmd[2]) {
                 var confd = conf.get(name);
                 var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
 
-                T.FullUserSearch(SearchName).then(function(data){
-                  if(typeof(data) == "undefined"){
-                    console.log(chalk.red('Bu kullanıcı Adına ait hesap bulamadık, doğru yazdığınızdan emin olun.'));
-                  }else{
-                     confd.blacklist.push(data.id_str);
-                     confd.blacklist=_.uniq(confd.blacklist);
-                     conf.set(confd.username,confd);
-                     console.log(chalk.green(data.name+"'i yasaklılar listesine ekledik.."));
-                  }
+                T.UserLookup({screen_name:SearchName})
+                .then(function(data){
+                      if(typeof(data.id_str) == "undefined" && data.code == 50){
+                        return null;
+                      }else{
+                        return T.BlockCreate({user_id:data[0].id_str});
+                      }
 
+                }).then(function(respons){
+                   if(respons == null ){
+                    console.log(chalk.red('Bu kullanıcı Adına ait hesap bulamadık, doğru yazdığınızdan emin olun.'));
+                        return null;
+                   }else{
+                      console.log(chalk.green(respons.name+"'i yasaklılar listesine ekledik.."));
+                      return T.Blocks();
+                   }    
+                }).then(function(blacklist){
+                    if(blacklist != null){
+                      confd.blacklist=_.uniq(blacklist.ids);
+                      conf.set(confd.username,confd);
+                    }
+                }).catch(function(Err){
+                  console.log(Err.stack);
                 });
 
             });

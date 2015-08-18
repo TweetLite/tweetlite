@@ -11,8 +11,8 @@
 		"path":"friends/ids",
 		"method":"get"
 	},
-	"UserSearch":{
-		"path":"users/search",
+	"UserLookup":{
+		"path":"users/lookup",
 		"method":"get"
 	},
 	"Favorite":{
@@ -25,6 +25,14 @@
 	},
 	"UserCreate":{
 		"path":"friendships/create",
+		"method":"post"
+	},
+	"Blocks":{
+		"path":"blocks/ids",
+		"method":"get"
+	},
+	"BlockCreate":{
+		"path":"blocks/create",
 		"method":"post"
 	}
 }
