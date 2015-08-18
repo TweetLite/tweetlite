@@ -95,7 +95,7 @@ switch(cmd[2]) {
                     console.log(chalk.red('Bu kullanıcı Adına ait hesap bulamadık, doğru yazdığınızdan emin olun.'));
                         return null;
                    }else{
-                      console.log(chalk.green(respons.name+"'i yasaklılar listesine ekledik.."));
+                      console.log(chalk.green('   '+util.Hal(respons.screen_name,'i') +" yasaklılar listesine ekledik.."));
                       return T.Blocks();
                    }    
                 }).then(function(blacklist){
@@ -114,6 +114,8 @@ switch(cmd[2]) {
      	break;
     case "live" :
     case "L" :
+        var notification = args.notification ? args.notification : null;
+        console.log(notification);
         if(conf.list().length > 0){
             var ques = qu.live;
             ques[0].choices =conf.list();
@@ -128,10 +130,10 @@ switch(cmd[2]) {
                     keywords = answers.keywords;
                 }
 
-                var stream = T.Stream({ track: keywords })
+                var stream = T.Stream({ track: keywords, language:confd.lang })
                 console.log('   '+chalk.bgCyan.bold.inverse.white('  TWİTBOT CANLI TAKİP ⚫ '));
                 stream.on('tweet', function (tweet) {
-                    T.StreamAction(tweet,confd.blacklist,confd.lang);
+                    T.StreamAction(tweet,confd.blacklist,confd.lang,notification,answers.favorite);
                 });
 
                 stream.on('disconnect', function (disconnectMessage) {
@@ -162,7 +164,7 @@ switch(cmd[2]) {
                  T.NotFollowingList().then(function(data){
                    return T.FullUserDestroy(data);
                  }).then(function(){
-                    console.log(chalk.green(name+"'i takip etmeyen kullanıcıları unfollow ettik.."));
+                    console.log(chalk.green('   '+util.Hal(name,'i')+" takip etmeyen kullanıcıları unfollow ettik.."));
                  }).catch(function(err){
                     console.log(err);
                  });
