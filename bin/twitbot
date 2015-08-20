@@ -10,6 +10,8 @@ var osHomedir = require('os-homedir');
 var qu = require('../lib/question.js');
 var TT = require('../lib/twit.js');
 var util = require('../lib/util.js');
+var forever = require('forever');
+var path = require('path');
 
 var conf = Config(osHomedir(),'.twitbotrc'),
 	args = parseArgs(process.argv);
@@ -39,7 +41,7 @@ switch(cmd[2]) {
                       data = data.slice(0,answers.takip_sayi);
                        
                       var userlist = util.SelectData(data,confd.blacklist,'user');
-                      var twetlist = util.SelectData(data,confd.blacklist,'id_str');
+                      var twetlist = util.SelectData(data,confd.blacklist,'id');
                        
                       var dump =[T.FullUserFollow(userlist)];
                       if(answers.favorite =="Evet"){
@@ -132,7 +134,7 @@ switch(cmd[2]) {
                 var stream = T.Stream({ track: keywords, language:confd.lang })
                 console.log('   '+chalk.bgCyan.bold.inverse.white('  TWİTBOT CANLI TAKİP ⚫ '));
                 stream.on('tweet', function (tweet) {
-                    T.StreamAction(tweet,confd.blacklist,confd.lang,notification,answers.favorite);
+                    T.StreamAction(tweet,name,notification,answers.favorite);
                 });
 
                 stream.on('disconnect', function (disconnectMessage) {
@@ -146,8 +148,55 @@ switch(cmd[2]) {
            console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
         }
         break;
-    case "flush" :
+    case "forever" :
     case "F" :
+      
+      if(args.stop){
+        forever.list(false,function(err,_process){
+
+          var twitbot = util.ForeverCheck(_process);
+          
+          if(twitbot.length > 0){
+             forever.stopbypid(twitbot.pid);
+          }
+        
+        });
+      }
+      else{
+
+        var notification = args.notification ? args.notification : null;
+        if(conf.list().length > 0){
+          var ques = qu.live;
+            ques[0].choices =conf.list();
+            inquirer.prompt(ques, function( answers ) {
+                var name = answers.select_account;
+                var confd = conf.get(name);
+
+                var keywords=null;
+                if(typeof(answers.keywords)  !== "object"){
+                    keywords = answers.keywords.split(',');
+                }else{
+                    keywords = answers.keywords;
+                }
+
+
+                var monitor = forever.startDaemon(path.join(__dirname,'../lib/worker.js'),{
+                  uid:"twitbot",args:['--keywords='+keywords.toString(),
+                                      '--favorite='+answers.favorite,
+                                      '--notification='+notification,
+                                      '--name='+name]});
+                
+            });
+
+        }else{
+           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+        }
+       
+      }
+
+      break;
+    case "flush" :
+    case "FL" :
      	conf.flush();
     	break;
     case "unfollow" :
