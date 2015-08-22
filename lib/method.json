@@ -34,5 +34,9 @@
 	"BlockCreate":{
 		"path":"blocks/create",
 		"method":"post"
+	},
+	"MessageCreate":{
+		"path":"direct_messages/new",
+		"method":"post"
 	}
 }

@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-var Config = require('../lib/config.js');
+var nconf = require('nconf');
 var parseArgs  = require('minimist');
 var inquirer = require("inquirer");
 var fs = require('fs');
@@ -13,9 +13,11 @@ var util = require('../lib/util.js');
 var forever = require('forever');
 var path = require('path');
 
-var conf = Config(osHomedir(),'.twitbotrc'),
-	args = parseArgs(process.argv);
-	cmd  = args._;
+nconf.file({ file: path.join(osHomedir(),'.twitbotrc') });
+
+var	args = parseArgs(process.argv);
+	  cmd  = args._;
+
 
 switch(cmd[2]) {
     case "new" :
@@ -23,25 +25,29 @@ switch(cmd[2]) {
          inquirer.prompt( qu.config, function( answers ) {
               answers.blacklist=[],
               answers.followerlist=[];
-			  conf.set(answers.username,answers);
+        nconf.set('users:'+answers.username,answers);
+        nconf.save(function (err) {
+          if(err) console.error(err)
+          else console.log(chalk.green('  İşlemleri tamamladık..'));
+        });
 		});
         break;
     case "start":
     case "S" :
-        if(conf.list().length > 0){
+        if(_.allKeys(nconf.get('users')).length > 0){
             var ques = qu.start;
-            ques[0].choices =conf.list();
+            ques[0].choices =_.allKeys(nconf.get('users'));
             inquirer.prompt(ques, function( answers ) {
                 
                 var name = answers.select_account; 
-                var confd = conf.get(name);
+                var confd = nconf.get('users:'+name);
                 var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
                 
                 T.FullSearch({q:answers.keyword,count:answers.takip_sayi, lang:confd.lang}).then(function(data){
                       data = data.slice(0,answers.takip_sayi);
                        
                       var userlist = util.SelectData(data,confd.blacklist,'user');
-                      var twetlist = util.SelectData(data,confd.blacklist,'id');
+                      var twetlist = util.SelectData(data,confd.blacklist,'id_str');
                        
                       var dump =[T.FullUserFollow(userlist)];
                       if(answers.favorite =="Evet"){
@@ -62,8 +68,11 @@ switch(cmd[2]) {
 
                      return T.Blocks();
                 }).then(function(blacklist){
-                    confd.blacklist=_.uniq(blacklist.ids);
-                    conf.set(confd.username,confd);
+                    nconf.set('users:'+confd.username+':blacklist',_.uniq(blacklist.ids));
+                    nconf.save(function (err) {
+                      if(err) console.error(err)
+                      else console.log(chalk.green('  İşlemleri tamamladık..'));
+                    });
                 }).catch(function(Err){
                   console.log(Err);
                 });
@@ -75,13 +84,13 @@ switch(cmd[2]) {
         break;
     case "blacklist" :
     case "B" :
-     	if(conf.list().length > 0){
+     	if(_.allKeys(nconf.get('users')).length > 0){
             var ques = qu.blacklist;
-            ques[0].choices =conf.list();
+            ques[0].choices =_.allKeys(nconf.get('users'));
             inquirer.prompt(ques, function( answers ) {
                 var name = answers.select_account;
                 var SearchName=answers.blacklist_username;
-                var confd = conf.get(name);
+                var confd = nconf.get('users:'+name);
                 var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
 
                 T.UserLookup({screen_name:SearchName})
@@ -102,8 +111,11 @@ switch(cmd[2]) {
                    }    
                 }).then(function(blacklist){
                     if(blacklist != null){
-                      confd.blacklist=_.uniq(blacklist.ids);
-                      conf.set(confd.username,confd);
+                      nconf.set('users:'+confd.username+':blacklist',_.uniq(blacklist.ids));
+                      nconf.save(function (err) {
+                        if(err) console.error(err)
+                        else console.log(chalk.green('   İşlemleri tamamladık..'));
+                      });
                     }
                 }).catch(function(Err){
                   console.log(Err.stack);
@@ -117,12 +129,12 @@ switch(cmd[2]) {
     case "live" :
     case "L" :
         var notification = args.notification ? args.notification : null;
-        if(conf.list().length > 0){
+        if(_.allKeys(nconf.get('users')).length > 0){
             var ques = qu.live;
-            ques[0].choices =conf.list();
+            ques[0].choices =_.allKeys(nconf.get('users'));
             inquirer.prompt(ques, function( answers ) {
                 var name = answers.select_account;
-                var confd = conf.get(name);
+                var confd = nconf.get('users:'+name);
                 var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
                 var keywords=null;
                 if(typeof(answers.keywords)  !== "object"){
@@ -134,6 +146,7 @@ switch(cmd[2]) {
                 var stream = T.Stream({ track: keywords, language:confd.lang })
                 console.log('   '+chalk.bgCyan.bold.inverse.white('  TWİTBOT CANLI TAKİP ⚫ '));
                 stream.on('tweet', function (tweet) {
+                    util.UpdateBlacklist(T,name);
                     T.StreamAction(tweet,name,notification,answers.favorite);
                 });
 
@@ -150,63 +163,64 @@ switch(cmd[2]) {
         break;
     case "forever" :
     case "F" :
-      
-      if(args.stop){
-        forever.list(false,function(err,_process){
+      if(_.allKeys(nconf.get('users')).length >0){
 
-          var twitbot = util.ForeverCheck(_process);
+         if(args.stop){
+          forever.list(false,function(err,_process){
+
+            var twitbot = util.ForeverCheck(_process);
+            
+            if(twitbot.length > 0){
+               forever.stopbypid(twitbot.pid);
+            }
           
-          if(twitbot.length > 0){
-             forever.stopbypid(twitbot.pid);
-          }
-        
-        });
-      }
-      else{
-
-        var notification = args.notification ? args.notification : null;
-        if(conf.list().length > 0){
-          var ques = qu.live;
-            ques[0].choices =conf.list();
-            inquirer.prompt(ques, function( answers ) {
-                var name = answers.select_account;
-                var confd = conf.get(name);
-
-                var keywords=null;
-                if(typeof(answers.keywords)  !== "object"){
-                    keywords = answers.keywords.split(',');
-                }else{
-                    keywords = answers.keywords;
-                }
-
-
-                var monitor = forever.startDaemon(path.join(__dirname,'../lib/worker.js'),{
-                  uid:"twitbot",args:['--keywords='+keywords.toString(),
-                                      '--favorite='+answers.favorite,
-                                      '--notification='+notification,
-                                      '--name='+name]});
-                
-            });
-
+          });
         }else{
-           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
-        }
-       
-      }
+          var ques = qu.live;
+              ques[0].choices =_.allKeys(nconf.get('users'));
+              inquirer.prompt(ques, function( answers ) {
+                  var name = answers.select_account;
+                  var confd = nconf.get('users:'+name);
 
+                  var keywords=null;
+                  if(typeof(answers.keywords)  !== "object"){
+                      keywords = answers.keywords.split(',');
+                  }else{
+                      keywords = answers.keywords;
+                  }
+
+
+                  var monitor = forever.startDaemon(path.join(__dirname,'../lib/worker.js'),{
+                    uid:"twitbot",args:['--keywords='+keywords.toString(),
+                                        '--favorite='+answers.favorite,
+                                        '--notification='+notification,
+                                        '--name='+name]});
+                  
+              });
+
+        }
+
+      }else{
+        console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+      }
+      
       break;
     case "flush" :
     case "FL" :
-     	conf.flush();
+     	 nconf.remove('users');
+       nconf.save(function (err) {
+          if(err) console.error(err)
+          else console.log(chalk.green('  İşlemleri tamamladık..'));
+       });
     	break;
     case "unfollow" :
     case "U" :
-        if(conf.list().length > 0){
+        if(_.allKeys(nconf.get('users')).length > 0){
             var ques = qu.accountlist;
-            ques[0].choices = conf.list();
+            ques[0].choices = _.allKeys(nconf.get('users'));
             inquirer.prompt(ques, function( answers ) {
                  var name = answers.select_account; 
-                 var confd = conf.get(name);
+                 var confd = nconf.get('users:'+name);
                  var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
 
                  T.NotFollowingList().then(function(data){
@@ -221,6 +235,36 @@ switch(cmd[2]) {
            console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
         }
         break;
+    case "mesaj":
+    case "M":
+            if(_.allKeys('users').length > 0){
+            var ques = qu.messagelist;
+            ques[0].choices =_.allKeys('users');
+            inquirer.prompt(ques, function( answers ) {
+                
+                var name = answers.select_account; 
+                var confd = conf.get('users:'+name);
+                var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
+                
+                if(answers.send =="Evet" && answers.message){
+                    T.Followers()
+                   .then(function(data){
+                      return T.FullUserMessage(data.ids,answers.message)
+                    }).then(function(respons){
+                        var MessageCount = util.FavoriteCheck(respons[0]);
+                        console.log(chalk.green('  '+MessageCount +' Kişiye mesaj gönderildi.'));
+                    }).catch(function(err){
+                        console.error(err);
+                    });
+                }else{
+                    console.log(chalk.red('Mesaj atmaya karar verdiğinde tekrar gel..'));
+                }
+
+            });
+        }else{
+           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+        }
+    break;
     case "version":
     case "V":
         console.log(require('../package.json').version);
