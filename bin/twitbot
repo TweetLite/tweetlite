@@ -23,8 +23,6 @@ switch(cmd[2]) {
     case "new" :
     case "N" :
          inquirer.prompt( qu.config, function( answers ) {
-              answers.blacklist=[],
-              answers.followerlist=[];
         nconf.set('users:'+answers.username,answers);
         nconf.save(function (err) {
           if(err) console.error(err)
@@ -44,35 +42,35 @@ switch(cmd[2]) {
                 var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
                 
                 T.FullSearch({q:answers.keyword,count:answers.takip_sayi, lang:confd.lang}).then(function(data){
-                      data = data.slice(0,answers.takip_sayi);
-                       
-                      var userlist = util.SelectData(data,confd.blacklist,'user');
-                      var twetlist = util.SelectData(data,confd.blacklist,'id_str');
-                       
-                      var dump =[T.FullUserFollow(userlist)];
-                      if(answers.favorite =="Evet"){
-                        dump.push(T.FullUserFavorite(twetlist));
-                      } 
+                  
+                  data = data.slice(0,answers.takip_sayi);
+                  return Promise.all([data,T.Blocks()]);
 
-                      return Promise.all(dump);
-                }).then(function(data){ 
-                     var FollowCount = util.FollowCheck(data[0]);
-                     if(data.length > 0){ 
-                        var FavoriteCount = util.FavoriteCheck(data[1]);
-                     }
-                     console.log(chalk.green('  İşlemleri tamamladık..'));
-                     console.log(chalk.green('  '+FollowCount +' Kişi Takip Edildi.')); 
-                     if(data.length > 0){     
-                     console.log(chalk.green('  '+FavoriteCount +' Tweete Favori Eklendi.'));
-                     }
+                }).then(function(data,blacklist){ 
+                  var userlist = util.SelectData(data[0],blacklist.ids,'user');
+                  var twetlist = util.SelectData(data[0],blacklist.ids,'id_str');
+                  
+                  var list =[T.FullUserFollow(userlist)];
+                  
+                   if(answers.favorite =="Evet"){
+                     list.push(T.FullUserFavorite(twetlist));
+                   }   
 
-                     return T.Blocks();
-                }).then(function(blacklist){
-                    nconf.set('users:'+confd.username+':blacklist',_.uniq(blacklist.ids));
-                    nconf.save(function (err) {
-                      if(err) console.error(err)
-                      else console.log(chalk.green('  İşlemleri tamamladık..'));
-                    });
+                   return Promise.all(list);
+
+                }).then(function(data){
+                  
+                  var FollowCount = util.FollowCheck(data[0]);
+                  
+                  if(data.length > 0){ 
+                     var FavoriteCount = util.FavoriteCheck(data[1]);
+                  }
+                  console.log(chalk.green('  İşlemleri tamamladık..'));
+                  console.log(chalk.green('  '+FollowCount +' Kişi Takip Edildi.')); 
+                  if(data.length > 0){     
+                  console.log(chalk.green('  '+FavoriteCount +' Tweete Favori Eklendi.'));
+                  }
+
                 }).catch(function(Err){
                   console.log(Err);
                 });
@@ -109,14 +107,6 @@ switch(cmd[2]) {
                       console.log(chalk.green('   '+util.Hal(respons.screen_name,'i') +" yasaklılar listesine ekledik.."));
                       return T.Blocks();
                    }    
-                }).then(function(blacklist){
-                    if(blacklist != null){
-                      nconf.set('users:'+confd.username+':blacklist',_.uniq(blacklist.ids));
-                      nconf.save(function (err) {
-                        if(err) console.error(err)
-                        else console.log(chalk.green('   İşlemleri tamamladık..'));
-                      });
-                    }
                 }).catch(function(Err){
                   console.log(Err.stack);
                 });
@@ -146,8 +136,7 @@ switch(cmd[2]) {
                 var stream = T.Stream({ track: keywords, language:confd.lang })
                 console.log('   '+chalk.bgCyan.bold.inverse.white('  TWİTBOT CANLI TAKİP ⚫ '));
                 stream.on('tweet', function (tweet) {
-                    util.UpdateBlacklist(T,name);
-                    T.StreamAction(tweet,name,notification,answers.favorite);
+                    T.StreamAction(tweet,notification,answers.favorite);
                 });
 
                 stream.on('disconnect', function (disconnectMessage) {
