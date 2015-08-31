@@ -28,7 +28,7 @@
   "dependencies": {
     "async": "^1.4.0",
     "bluebird": "^2.9.34",
-    "chalk": "^1.1.0",
+    "chalk": "^1.1.1",
     "forEachAsync": "^3.0.0",
     "forever": "^0.15.1",
     "haller": "^0.1.1",
@@ -36,6 +36,8 @@
     "libnotify": "^1.0.4",
     "minimist": "^1.1.1",
     "native-or-bluebird": "^1.2.0",
+    "nconf": "^0.7.2",
+    "optimist": "^0.6.1",
     "os-homedir": "^1.0.1",
     "trayballoon": "^1.0.4",
     "twit": "^2.1.0",
