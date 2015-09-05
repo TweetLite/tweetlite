@@ -5,7 +5,7 @@ var parseArgs  = require('minimist');
 var inquirer = require("inquirer");
 var fs = require('fs');
 var _ = require('underscore');
-var chalk = require('chalk');
+var clor = require('clor');
 var osHomedir = require('os-homedir');
 var qu = require('../lib/question.js');
 var TT = require('../lib/twit.js');
@@ -26,7 +26,7 @@ switch(cmd[2]) {
         nconf.set('users:'+answers.username,answers);
         nconf.save(function (err) {
           if(err) console.error(err)
-          else console.log(chalk.green('  İşlemleri tamamladık..'));
+          else console.log(`  ${clor.green('İşlemleri tamamladık..')}`);
         });
 		});
         break;
@@ -46,38 +46,48 @@ switch(cmd[2]) {
                   data = data.slice(0,answers.takip_sayi);
                   return Promise.all([data,T.Blocks(),T.Friends()]);
 
-                }).then(function(data,blacklist,Friends){ 
-                  var userlist = util.SelectData(data[0],blacklist.ids,'user');
-                  var twetlist = util.SelectData(data[0],blacklist.ids,'id_str');
-                      userlist = util.SelectData(data[0],userlist);
+                }).then(function(data){ 
+                  
+                     var Twetlist = data[0];
+                     var Blacklist = data[1];
+                     var Friendslist = data[2];
 
-                  var list =[];
-                  if(answers.takip =="Evet"){
-                    list.push(T.FullUserFollow(userlist));
-                  }
-                  if(answers.favorite =="Evet"){
-                    list.push(T.FullUserFavorite(twetlist));
-                  }   
+                  var userlist = util.SelectData(Twetlist,Blacklist.ids,'user');
+                  var twetlist = util.SelectData(Twetlist,Blacklist.ids,'id_str');
+                    userlist = _.filter(userlist,function(item){
+                             return !_.contains(Friendslist, item.id);
+                         });
+                    
 
-                   return Promise.all(list);
+                       
+
+                    var list =[];
+                    if(answers.takip =="Evet"){
+                      list.push(T.FullUserFollow(userlist));
+                    }
+                    if(answers.favorite =="Evet"){
+                      list.push(T.FullUserFavorite(twetlist));
+                    }   
+
+                       return Promise.all(list);
                 }).then(function(data){
                     
-                    console.log(chalk.green('  İşlemleri tamamladık..'));
+                    console.log(`  ${clor.green('  İşlemleri tamamladık..')}`);
                     if(answers.takip =="Evet" && answers.favorite =="Hayır"){
-                      console.log(chalk.green('  '+FollowCount +' Kişi Takip Edildi.')); 
                       var FollowCount = util.FollowCheck(data[0]);
+                      console.log(`  ${clor.yellow(FollowCount + " Kişi Takip Edildi.")}`);
                     }
 
                     if(answers.favorite =="Evet" && answers.takip =="Hayır"){
                        var FavoriteCount = util.FavoriteCheck(data[0]);
-                       console.log(chalk.green('  '+FavoriteCount +' Tweete Favori Eklendi.'));
+                       console.log(`  ${clor.yellow(FavoriteCount + " Tweete Favori Eklendi.")}`);
                     }
 
                     if(answers.takip =="Evet" && answers.favorite =="Evet"){
                       var FollowCount = util.FollowCheck(data[0]);
                       var FavoriteCount = util.FavoriteCheck(data[1]);
-                      console.log(chalk.green('  '+FollowCount +' Kişi Takip Edildi.')); 
-                      console.log(chalk.green('  '+FavoriteCount +' Tweete Favori Eklendi.'));
+                      console.log(`  ${clor.yellow(FollowCount + " Kişi Takip Edildi.")}`);
+                      console.log(`  ${clor.yellow(FavoriteCount + " Tweete Favori Eklendi.")}`);
                     }
                 }).catch(function(Err){
                   console.log(Err);
@@ -85,7 +95,7 @@ switch(cmd[2]) {
 
             });
         }else{
-           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
         }
         break;
     case "blacklist" :
@@ -109,10 +119,10 @@ switch(cmd[2]) {
 
                 }).then(function(respons){
                    if(respons == null ){
-                    console.log(chalk.red('Bu kullanıcı Adına ait hesap bulamadık, doğru yazdığınızdan emin olun.'));
+                   console.log(`  ${clor.yellow('Bu kullanıcı Adına ait hesap bulamadık, doğru yazdığınızdan emin olun.')}`); 
                         return null;
-                   }else{
-                      console.log(chalk.green('   '+util.Hal(respons.screen_name,'i') +" yasaklılar listesine ekledik.."));
+                   }else{ 
+                      console.log(`  ${clor.green(util.Hal(respons.screen_name,'i') +" yasaklılar listesine ekledik..")}`); 
                       return T.Blocks();
                    }    
                 }).catch(function(Err){
@@ -121,7 +131,7 @@ switch(cmd[2]) {
 
             });
         }else{
-           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`); 
         }
      	break;
     case "live" :
@@ -142,20 +152,20 @@ switch(cmd[2]) {
                 }
 
                 var stream = T.Stream({ track: keywords, language:confd.lang })
-                console.log('   '+chalk.bgCyan.bold.inverse.white('  TWİTBOT CANLI TAKİP ⚫ '));
+                console.log(`   ${clor.bgCyan.bold.inverse.white('  TWİTBOT CANLI TAKİP ⚫ ')}`);
                 stream.on('tweet', function (tweet) {
                     T.StreamAction(tweet,notification,answers.favorite,answers.takip);
                 });
 
                 stream.on('disconnect', function (disconnectMessage) {
-                  console.log(chalk.red('Bağlantı koptuğu için canlı takip sonlandı'));
+                  console.log(`${clor.red('Bağlantı koptuğu için canlı takip sonlandı')}`);
                   process.exit(1);
                 });
                
 
             });
         }else{
-           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
         }
         break;
     case "forever" :
@@ -199,7 +209,7 @@ switch(cmd[2]) {
         }
 
       }else{
-        console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+        console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`); 
       }
       
       break;
@@ -208,7 +218,7 @@ switch(cmd[2]) {
      	 nconf.remove('users');
        nconf.save(function (err) {
           if(err) console.error(err)
-          else console.log(chalk.green('  İşlemleri tamamladık..'));
+          console.log(`  ${clor.green('İşlemleri tamamladık..')}`); 
        });
     	break;
     case "unfollow" :
@@ -224,13 +234,13 @@ switch(cmd[2]) {
                  T.NotFollowingList().then(function(data){
                    return T.FullUserDestroy(data);
                  }).then(function(){
-                    console.log(chalk.green('   '+util.Hal(name,'i')+" takip etmeyen kullanıcıları unfollow ettik.."));
+                    console.log(`  ${clor.green(util.Hal(name,'i')+" takip etmeyen kullanıcıları unfollow ettik..")}`); 
                  }).catch(function(err){
                     console.log(err);
                  });
             });
         }else{
-           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`); 
         }
         break;
     case "mesaj":
@@ -249,18 +259,18 @@ switch(cmd[2]) {
                    .then(function(data){
                       return T.FullUserMessage(data.ids,answers.message)
                     }).then(function(respons){
-                        var MessageCount = util.FavoriteCheck(respons[0]);
-                        console.log(chalk.green('  '+MessageCount +' Kişiye mesaj gönderildi.'));
+                        var MessageCount = respons.length;
+                        console.log(`  ${clor.green(MessageCount +' Kişiye mesaj gönderildi.')}`); 
                     }).catch(function(err){
                         console.error(err);
                     });
-                }else{
-                    console.log(chalk.red('Mesaj atmaya karar verdiğinde tekrar gel..'));
+                }else{ 
+                    console.log(`${clor.red('Mesaj atmaya karar verdiğinde tekrar gel..')}`); 
                 }
 
             });
         }else{
-           console.log(chalk.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]'));
+          console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
         }
     break;
     case "version":

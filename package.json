@@ -28,7 +28,7 @@
   "dependencies": {
     "async": "^1.4.0",
     "bluebird": "^2.9.34",
-    "chalk": "^1.1.1",
+    "clor": "^1.0.2",
     "forEachAsync": "^3.0.0",
     "forever": "^0.15.1",
     "haller": "^0.1.1",
