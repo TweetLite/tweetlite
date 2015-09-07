@@ -126,7 +126,7 @@ switch(cmd[2]) {
                       return T.Blocks();
                    }    
                 }).catch(function(Err){
-                  console.log(Err.stack);
+                  console.log(Err);
                 });
 
             });
@@ -175,11 +175,32 @@ switch(cmd[2]) {
          if(args.stop){
           forever.list(false,function(err,_process){
 
-            var twitbot = util.ForeverCheck(_process);
+              var twitbot = util.ForeverCheck(_process);
+              
+               if(twitbot.length > 0){
+
+                  var plist = _process.map(function(item){
+                    return{
+                      foreverPid:item.foreverPid,
+                      pid:item.pid,
+                      uid:item.uid,
+                      name:item.uid.split('_')[1]
+                    }
+                  });
+
+                  var ques = qu._process;
+                  ques[0].choices =_.pluck(plist, 'name');
+                  inquirer.prompt(ques, function( answers ) {
+                       forever.stopbypid(_.pluck(_.filter(plist,function(item){ 
+                        return item.name === answers.select_pid; 
+                        }
+                        ), 'pid')[0]);
+                       console.log(`${clor.green('Arkplanda çalışan bot durduruldu. [ > twitbot F]')}`); 
+                  })
+               }else{
+                 console.log(`${clor.red('Arkplanda çalışan bot yok. [ > twitbot F]')}`); 
+               }
             
-            if(twitbot.length > 0){
-               forever.stopbypid(twitbot.pid);
-            }
           
           });
         }else{
@@ -198,7 +219,7 @@ switch(cmd[2]) {
 
 
                   var monitor = forever.startDaemon(path.join(__dirname,'../lib/worker.js'),{
-                    uid:"twitbot",args:['--keywords='+keywords.toString(),
+                    uid:"twitbot_"+name,args:['--keywords='+keywords.toString(),
                                         '--favorite='+answers.favorite,
                                         '--notification='+notification,
                                         '--name='+name,
@@ -257,6 +278,7 @@ switch(cmd[2]) {
                 if(answers.send =="Evet" && answers.message){
                     T.Followers()
                    .then(function(data){
+                      data = data.slice(0,answers.limit);
                       return T.FullUserMessage(data.ids,answers.message)
                     }).then(function(respons){
                         var MessageCount = respons.length;
