@@ -4,4 +4,4 @@
 
 ### Screenshot
 
-[Example](./screenshot.png)
+![Example](./screenshot.png)
