@@ -278,8 +278,8 @@ switch(cmd[2]) {
                 if(answers.send =="Evet" && answers.message){
                     T.Followers()
                    .then(function(data){
-                      data = data.slice(0,answers.limit);
-                      return T.FullUserMessage(data.ids,answers.message)
+                      data = data.ids.slice(0,answers.limit);
+                      return T.FullUserMessage(data,answers.message)
                     }).then(function(respons){
                         var MessageCount = respons.length;
                         console.log(`  ${clor.green(MessageCount +' Kişiye mesaj gönderildi.')}`); 
