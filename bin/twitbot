@@ -36,54 +36,54 @@ switch(cmd[2]) {
             var ques = qu.start;
             ques[0].choices =_.allKeys(nconf.get('users'));
             inquirer.prompt(ques, function( answers ) {
-                
-                var name = answers.select_account; 
+
+                var name = answers.select_account;
                 var confd = nconf.get('users:'+name);
                 var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
-                
+
                 T.FullSearch({q:answers.keyword,count:answers.takip_sayi, lang:confd.lang}).then(function(data){
-                  
+
                   data = data.slice(0,answers.takip_sayi);
                   return Promise.all([data,T.Blocks(),T.Friends()]);
 
-                }).then(function(data){ 
-                  
+                }).then(function(data){
+
                      var Twetlist = data[0];
                      var Blacklist = data[1];
                      var Friendslist = data[2];
 
                   var userlist = util.SelectData(Twetlist,Blacklist.ids,'user');
-                  var twetlist = util.SelectData(Twetlist,Blacklist.ids,'id_str');
-                    userlist = _.filter(userlist,function(item){
+                  var twetlist = util.SelectData(Twetlist,Blacklist.ids,'id');
+                    userlist = _.filter(twetlist,function(item){
                              return !_.contains(Friendslist, item.id);
                          });
-                    
 
-                       
+
+
 
                     var list =[];
-                    if(answers.takip =="Evet"){
+                    if(answers.takip =="Yes"){
                       list.push(T.FullUserFollow(userlist));
                     }
-                    if(answers.favorite =="Evet"){
+                    if(answers.favorite =="Yes"){
                       list.push(T.FullUserFavorite(twetlist));
-                    }   
+                    }
 
                        return Promise.all(list);
                 }).then(function(data){
-                    
+
                     console.log(`  ${clor.green('  İşlemleri tamamladık..')}`);
-                    if(answers.takip =="Evet" && answers.favorite =="Hayır"){
+                    if(answers.takip =="Yes" && answers.favorite =="No"){
                       var FollowCount = util.FollowCheck(data[0]);
                       console.log(`  ${clor.yellow(FollowCount + " Kişi Takip Edildi.")}`);
                     }
 
-                    if(answers.favorite =="Evet" && answers.takip =="Hayır"){
+                    if(answers.favorite =="Yes" && answers.takip =="No"){
                        var FavoriteCount = util.FavoriteCheck(data[0]);
                        console.log(`  ${clor.yellow(FavoriteCount + " Tweete Favori Eklendi.")}`);
                     }
 
-                    if(answers.takip =="Evet" && answers.favorite =="Evet"){
+                    if(answers.takip =="Yes" && answers.favorite =="Yes"){
                       var FollowCount = util.FollowCheck(data[0]);
                       var FavoriteCount = util.FavoriteCheck(data[1]);
                       console.log(`  ${clor.yellow(FollowCount + " Kişi Takip Edildi.")}`);
@@ -119,19 +119,19 @@ switch(cmd[2]) {
 
                 }).then(function(respons){
                    if(respons == null ){
-                   console.log(`  ${clor.yellow('Bu kullanıcı Adına ait hesap bulamadık, doğru yazdığınızdan emin olun.')}`); 
+                   console.log(`  ${clor.yellow('Bu kullanıcı Adına ait hesap bulamadık, doğru yazdığınızdan emin olun.')}`);
                         return null;
-                   }else{ 
-                      console.log(`  ${clor.green(util.Hal(respons.screen_name,'i') +" yasaklılar listesine ekledik..")}`); 
+                   }else{
+                      console.log(`  ${clor.green(util.Hal(respons.screen_name,'i') +" yasaklılar listesine ekledik..")}`);
                       return T.Blocks();
-                   }    
+                   }
                 }).catch(function(Err){
                   console.log(Err);
                 });
 
             });
         }else{
-           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`); 
+           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
         }
      	break;
     case "live" :
@@ -161,7 +161,7 @@ switch(cmd[2]) {
                   console.log(`${clor.red('Bağlantı koptuğu için canlı takip sonlandı')}`);
                   process.exit(1);
                 });
-               
+
 
             });
         }else{
@@ -176,7 +176,7 @@ switch(cmd[2]) {
           forever.list(false,function(err,_process){
 
               var twitbot = util.ForeverCheck(_process);
-              
+
                if(twitbot.length > 0){
 
                   var plist = _process.map(function(item){
@@ -191,17 +191,17 @@ switch(cmd[2]) {
                   var ques = qu._process;
                   ques[0].choices =_.pluck(plist, 'name');
                   inquirer.prompt(ques, function( answers ) {
-                       forever.stopbypid(_.pluck(_.filter(plist,function(item){ 
-                        return item.name === answers.select_pid; 
+                       forever.stopbypid(_.pluck(_.filter(plist,function(item){
+                        return item.name === answers.select_pid;
                         }
                         ), 'pid')[0]);
-                       console.log(`${clor.green('Arkplanda çalışan bot durduruldu. [ > twitbot F]')}`); 
+                       console.log(`${clor.green('Arkplanda çalışan bot durduruldu. [ > twitbot F]')}`);
                   })
                }else{
-                 console.log(`${clor.red('Arkplanda çalışan bot yok. [ > twitbot F]')}`); 
+                 console.log(`${clor.red('Arkplanda çalışan bot yok. [ > twitbot F]')}`);
                }
-            
-          
+
+
           });
         }else{
           var ques = qu.live;
@@ -224,22 +224,22 @@ switch(cmd[2]) {
                                         '--notification='+notification,
                                         '--name='+name,
                                         '--takip='+answers.takip]});
-                  
+
               });
 
         }
 
       }else{
-        console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`); 
+        console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
       }
-      
+
       break;
     case "flush" :
     case "FL" :
      	 nconf.remove('users');
        nconf.save(function (err) {
           if(err) console.error(err)
-          console.log(`  ${clor.green('İşlemleri tamamladık..')}`); 
+          console.log(`  ${clor.green('İşlemleri tamamladık..')}`);
        });
     	break;
     case "unfollow" :
@@ -248,20 +248,20 @@ switch(cmd[2]) {
             var ques = qu.accountlist;
             ques[0].choices = _.allKeys(nconf.get('users'));
             inquirer.prompt(ques, function( answers ) {
-                 var name = answers.select_account; 
+                 var name = answers.select_account;
                  var confd = nconf.get('users:'+name);
 	               var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
 
                  T.NotFollowingList().then(function(data){
                    return T.FullUserDestroy(data);
                  }).then(function(){
-                    console.log(`  ${clor.green(util.Hal(name,'i')+" takip etmeyen kullanıcıları unfollow ettik..")}`); 
+                    console.log(`  ${clor.green(util.Hal(name,'i')+" takip etmeyen kullanıcıları unfollow ettik..")}`);
                  }).catch(function(err){
                     console.log(err);
                  });
             });
         }else{
-           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`); 
+           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
         }
         break;
     case "mesaj":
@@ -270,24 +270,24 @@ switch(cmd[2]) {
             var ques = qu.messagelist;
             ques[0].choices =_.allKeys(nconf.get('users'));
             inquirer.prompt(ques, function( answers ) {
-                
-                var name = answers.select_account; 
+
+                var name = answers.select_account;
                 var confd = nconf.get('users:'+name);
                 var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
-                
-                if(answers.send =="Evet" && answers.message){
+
+                if(answers.send =="Yes" && answers.message){
                     T.Followers()
                    .then(function(data){
                       data = data.ids.slice(0,answers.limit);
                       return T.FullUserMessage(data,answers.message)
                     }).then(function(respons){
                         var MessageCount = respons.length;
-                        console.log(`  ${clor.green(MessageCount +' Kişiye mesaj gönderildi.')}`); 
+                        console.log(`  ${clor.green(MessageCount +' Kişiye mesaj gönderildi.')}`);
                     }).catch(function(err){
                         console.error(err);
                     });
-                }else{ 
-                    console.log(`${clor.red('Mesaj atmaya karar verdiğinde tekrar gel..')}`); 
+                }else{
+                    console.log(`${clor.red('Mesaj atmaya karar verdiğinde tekrar gel..')}`);
                 }
 
             });
@@ -306,5 +306,3 @@ switch(cmd[2]) {
     default:
     util.help();
 }
-
-
