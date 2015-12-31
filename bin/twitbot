@@ -26,7 +26,7 @@ switch(cmd[2]) {
         nconf.set('users:'+answers.username,answers);
         nconf.save(function (err) {
           if(err) console.error(err)
-          else console.log(`  ${clor.green('İşlemleri tamamladık..')}`);
+          else console.log(`  ${clor.green('Transactions completed.')}`);
         });
 		});
         break;
@@ -72,30 +72,30 @@ switch(cmd[2]) {
                        return Promise.all(list);
                 }).then(function(data){
 
-                    console.log(`  ${clor.green('  İşlemleri tamamladık..')}`);
+                    console.log(`  ${clor.green('Transactions completed.')}`);
                     if(answers.takip =="Yes" && answers.favorite =="No"){
                       var FollowCount = util.FollowCheck(data[0]);
-                      console.log(`  ${clor.yellow(FollowCount + " Kişi Takip Edildi.")}`);
+                      console.log(`  ${clor.yellow(FollowCount + " people were followed.")}`);
                     }
 
                     if(answers.favorite =="Yes" && answers.takip =="No"){
                        var FavoriteCount = util.FavoriteCheck(data[0]);
-                       console.log(`  ${clor.yellow(FavoriteCount + " Tweete Favori Eklendi.")}`);
+                       console.log(`  ${clor.yellow(FavoriteCount + " tweets favorite added.")}`);
                     }
 
                     if(answers.takip =="Yes" && answers.favorite =="Yes"){
                       var FollowCount = util.FollowCheck(data[0]);
                       var FavoriteCount = util.FavoriteCheck(data[1]);
-                      console.log(`  ${clor.yellow(FollowCount + " Kişi Takip Edildi.")}`);
-                      console.log(`  ${clor.yellow(FavoriteCount + " Tweete Favori Eklendi.")}`);
+                      console.log(`  ${clor.yellow(FollowCount + " people were followed.")}`);
+                      console.log(`  ${clor.yellow(FavoriteCount + " tweets favorite added.")}`);
                     }
                 }).catch(function(Err){
-                  console.log(Err);
+                  console.error(Err);
                 });
 
             });
         }else{
-           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
+           console.log(`${clor.red('First, you must define an account [ > twitbot new]')}`);
         }
         break;
     case "blacklist" :
@@ -119,19 +119,19 @@ switch(cmd[2]) {
 
                 }).then(function(respons){
                    if(respons == null ){
-                   console.log(`  ${clor.yellow('Bu kullanıcı Adına ait hesap bulamadık, doğru yazdığınızdan emin olun.')}`);
+                   console.log(`  ${clor.yellow('On behalf of these users did not find the account, make sure you spelled correctly.')}`);
                         return null;
                    }else{
-                      console.log(`  ${clor.green(util.Hal(respons.screen_name,'i') +" yasaklılar listesine ekledik..")}`);
+                      console.log(`  ${clor.green(util.Hal(respons.screen_name,'i') +" added to the banned list ..")}`);
                       return T.Blocks();
                    }
                 }).catch(function(Err){
-                  console.log(Err);
+                  console.error(Err);
                 });
 
             });
         }else{
-           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
+           console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
         }
      	break;
     case "live" :
@@ -152,20 +152,20 @@ switch(cmd[2]) {
                 }
 
                 var stream = T.Stream({ track: keywords, language:confd.lang })
-                console.log(`   ${clor.bgCyan.bold.inverse.white('  TWİTBOT CANLI TAKİP ⚫ ')}`);
+                console.log(`   ${clor.bgCyan.bold.inverse.white('  TWİTBOT LİVE TRACKİNG ⚫ ')}`);
                 stream.on('tweet', function (tweet) {
                     T.StreamAction(tweet,notification,answers.favorite,answers.takip);
                 });
 
                 stream.on('disconnect', function (disconnectMessage) {
-                  console.log(`${clor.red('Bağlantı koptuğu için canlı takip sonlandı')}`);
+                  console.log(`${clor.red('It ended the connection was lost to follow live')}`);
                   process.exit(1);
                 });
 
 
             });
         }else{
-           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
+           console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
         }
         break;
     case "forever" :
@@ -195,10 +195,10 @@ switch(cmd[2]) {
                         return item.name === answers.select_pid;
                         }
                         ), 'pid')[0]);
-                       console.log(`${clor.green('Arkplanda çalışan bot durduruldu. [ > twitbot F]')}`);
+                       console.log(`${clor.green('Background stopped working bots. [ > twitbot F ]')}`);
                   })
                }else{
-                 console.log(`${clor.red('Arkplanda çalışan bot yok. [ > twitbot F]')}`);
+                 console.log(`${clor.red('Background not working bots. [ > twitbot F ]')}`);
                }
 
 
@@ -230,7 +230,7 @@ switch(cmd[2]) {
         }
 
       }else{
-        console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
+        console.log(`${clor.red('First, you must define an account  [ > twitbot new ]')}`);
       }
 
       break;
@@ -239,7 +239,7 @@ switch(cmd[2]) {
      	 nconf.remove('users');
        nconf.save(function (err) {
           if(err) console.error(err)
-          console.log(`  ${clor.green('İşlemleri tamamladık..')}`);
+          console.log(`  ${clor.green('Transactions completed...')}`);
        });
     	break;
     case "unfollow" :
@@ -255,16 +255,16 @@ switch(cmd[2]) {
                  T.NotFollowingList().then(function(data){
                    return T.FullUserDestroy(data);
                  }).then(function(){
-                    console.log(`  ${clor.green(util.Hal(name,'i')+" takip etmeyen kullanıcıları unfollow ettik..")}`);
+                    console.log(`  ${clor.green("users were not following unfollow..")}`);
                  }).catch(function(err){
                     console.log(err);
                  });
             });
         }else{
-           console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
+           console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
         }
         break;
-    case "mesaj":
+    case "message":
     case "M":
         if(_.allKeys(nconf.get('users')).length > 0){
             var ques = qu.messagelist;
@@ -282,17 +282,17 @@ switch(cmd[2]) {
                       return T.FullUserMessage(data,answers.message)
                     }).then(function(respons){
                         var MessageCount = respons.length;
-                        console.log(`  ${clor.green(MessageCount +' Kişiye mesaj gönderildi.')}`);
+                        console.log(`  ${clor.green('Persons posted '+ MessageCount +' messages ')}`);
                     }).catch(function(err){
                         console.error(err);
                     });
                 }else{
-                    console.log(`${clor.red('Mesaj atmaya karar verdiğinde tekrar gel..')}`);
+                    console.log(`${clor.red('Come back when he decided to take a message..')}`);
                 }
 
             });
         }else{
-          console.log(`${clor.red('Önce Bir hesap tanımlamalısınız [ > twitbot new]')}`);
+          console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
         }
     break;
     case "version":

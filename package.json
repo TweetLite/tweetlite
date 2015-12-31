@@ -1,7 +1,7 @@
 {
   "name": "twitbot",
-  "version": "0.2.3",
-  "description": "twitbot cli",
+  "version": "0.2.4",
+  "description": "Twitter bots for cli..",
   "main": "index.js",
   "scripts": {
     "test": "xo"
@@ -15,11 +15,12 @@
     "url": "git+https://github.com/ayhankuru/twitbot.git"
   },
   "keywords": [
-    "twit",
-    "bot",
-    "cli"
+    "twitter",
+    "bots",
+    "cli",
+    "follow"
   ],
-  "author": "Ayhan Kuru <ayhankuru@yandex.com.tr> (http://www.github.com/ayhankuru)",
+  "author": "Ayhan Kuru <cobaimelan@protonmail.ch> (http://www.github.com/ayhankuru)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ayhankuru/twitbot/issues"
