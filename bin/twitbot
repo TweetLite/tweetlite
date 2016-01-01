@@ -44,29 +44,27 @@ switch(cmd[2]) {
                 T.FullSearch({q:answers.keyword,count:answers.takip_sayi, lang:confd.lang}).then(function(data){
 
                   data = data.slice(0,answers.takip_sayi);
-                  return Promise.all([data,T.Blocks(),T.Friends()]);
+                  return Promise.all([data,T.Blocks({stringify_ids:true})]);
 
                 }).then(function(data){
 
                      var Twetlist = data[0];
                      var Blacklist = data[1];
-                     var Friendslist = data[2];
 
-                  var userlist = util.SelectData(Twetlist,Blacklist.ids,'user');
-                  var twetlist = util.SelectData(Twetlist,Blacklist.ids,'id');
-                    userlist = _.filter(twetlist,function(item){
-                             return !_.contains(Friendslist, item.id);
-                         });
+                     var SearchUsersList = _.pluck(Twetlist, 'user_str');
 
+                     var FollowList = _.filter(Twetlist,function(twet){
+                         return _.indexOf(Blacklist.ids, twet.user_str) != -1;
+                     });
 
 
 
                     var list =[];
                     if(answers.takip =="Yes"){
-                      list.push(T.FullUserFollow(userlist));
+                      list.push(T.FullUserFollow(_.pluck(FollowList, 'user_str')));
                     }
                     if(answers.favorite =="Yes"){
-                      list.push(T.FullUserFavorite(twetlist));
+                      list.push(T.FullUserFavorite(_.pluck(FollowList, 'id_str')));
                     }
 
                        return Promise.all(list);
@@ -74,21 +72,22 @@ switch(cmd[2]) {
 
                     console.log(`  ${clor.green('Transactions completed.')}`);
                     if(answers.takip =="Yes" && answers.favorite =="No"){
-                      var FollowCount = util.FollowCheck(data[0]);
-                      console.log(`  ${clor.yellow(FollowCount + " people were followed.")}`);
+                        var FollowCount = util.FollowCheck(data[0]);
+                        console.log(`  ${clor.yellow(FollowCount + " people were followed.")}`);
                     }
 
                     if(answers.favorite =="Yes" && answers.takip =="No"){
-                       var FavoriteCount = util.FavoriteCheck(data[0]);
-                       console.log(`  ${clor.yellow(FavoriteCount + " tweets favorite added.")}`);
+                        var FavoriteCount = util.FavoriteCheck(data[0]);
+                        console.log(`  ${clor.yellow(FavoriteCount + " tweets favorite added.")}`);
                     }
 
                     if(answers.takip =="Yes" && answers.favorite =="Yes"){
-                      var FollowCount = util.FollowCheck(data[0]);
-                      var FavoriteCount = util.FavoriteCheck(data[1]);
-                      console.log(`  ${clor.yellow(FollowCount + " people were followed.")}`);
-                      console.log(`  ${clor.yellow(FavoriteCount + " tweets favorite added.")}`);
+                        var FollowCount = util.FollowCheck(data[0]);
+                        var FavoriteCount = util.FavoriteCheck(data[1]);
+                        console.log(`  ${clor.yellow(FollowCount + " people were followed.")}`);
+                        console.log(`  ${clor.yellow(FavoriteCount + " tweets favorite added.")}`);
                     }
+
                 }).catch(function(Err){
                   console.error(Err);
                 });
@@ -232,6 +231,28 @@ switch(cmd[2]) {
       }else{
         console.log(`${clor.red('First, you must define an account  [ > twitbot new ]')}`);
       }
+
+      break;
+    case "worker":
+    case "W":
+
+        if(typeof process.env.twitbotUsername != 'undefined' &&
+           typeof process.env.twitbotConsumerKey != 'undefined' &&
+           typeof process.env.twitbotConsumerSecret != 'undefined' &&
+           typeof process.env.twitbotAccessToken != 'undefined' &&
+           typeof process.env.twitbotAccessTokenSecret != 'undefined' &&
+           typeof process.env.twitbotlang != 'undefined' &&
+           typeof process.env.twitbotFollow != 'undefined' &&
+           typeof process.env.twitbotFavorite != 'undefined' &&
+           typeof process.env.twitbotKeywords != 'undefined' &&
+          ){
+
+              // TODO
+
+        }else{
+            console.log(`${clor.red('First, you must define an environment ')}`);
+        }
+
 
       break;
     case "flush" :
