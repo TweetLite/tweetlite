@@ -57,8 +57,6 @@ switch(cmd[2]) {
                          return _.indexOf(Blacklist.ids, twet.user_str) != -1;
                      });
 
-
-
                     var list =[];
                     if(answers.takip =="Yes"){
                       list.push(T.FullUserFollow(_.pluck(FollowList, 'user_str')));
@@ -244,10 +242,47 @@ switch(cmd[2]) {
            typeof process.env.twitbotlang != 'undefined' &&
            typeof process.env.twitbotFollow != 'undefined' &&
            typeof process.env.twitbotFavorite != 'undefined' &&
-           typeof process.env.twitbotKeywords != 'undefined' &&
+           typeof process.env.twitbotKeywords != 'undefined'
           ){
 
-              // TODO
+            if(!args.stop){
+
+                var monitor = forever.startDaemon(path.join(__dirname,'../lib/worker.js'),{
+                  uid:"twitbot_"+ process.env.twitbotUsername});
+
+
+			}else{
+                forever.list(false,function(err,_process){
+
+                    var twitbot = util.ForeverCheck(_process);
+
+                     if(twitbot.length > 0){
+
+                        var plist = _process.map(function(item){
+                          return{
+                            foreverPid:item.foreverPid,
+                            pid:item.pid,
+                            uid:item.uid,
+                            name:item.uid.split('_')[1]
+                          }
+                        });
+
+                        var ques = qu._process;
+                        ques[0].choices =_.pluck(plist, 'name');
+                        inquirer.prompt(ques, function( answers ) {
+                             forever.stopbypid(_.pluck(_.filter(plist,function(item){
+                              return item.name === answers.select_pid;
+                              }
+                              ), 'pid')[0]);
+                             console.log(`${clor.green('Background stopped working bots. [ > twitbot F ]')}`);
+                        })
+                     }else{
+                       console.log(`${clor.red('Background not working bots. [ > twitbot F ]')}`);
+                     }
+
+
+                });
+			}
 
         }else{
             console.log(`${clor.red('First, you must define an environment ')}`);
