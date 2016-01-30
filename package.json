@@ -1,6 +1,6 @@
 {
   "name": "twitbot",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Twitter bots for cli..",
   "main": "index.js",
   "scripts": {
@@ -36,7 +36,6 @@
     "inquirer": "^0.10.0",
     "libnotify": "^1.0.4",
     "minimist": "^1.1.1",
-    "native-or-bluebird": "^1.2.0",
     "nconf": "^0.7.2",
     "optimist": "^0.6.1",
     "os-homedir": "^1.0.1",
