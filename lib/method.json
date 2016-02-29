@@ -31,6 +31,14 @@
 		"path":"blocks/ids",
 		"method":"get"
 	},
+	"Favorites":{
+		"path":"favorites/list",
+		"method":"get"
+	},
+	"FavoriteDestroy":{
+		"path":"favorites/destroy",
+		"method":"post"
+	},
 	"BlockCreate":{
 		"path":"blocks/create",
 		"method":"post"

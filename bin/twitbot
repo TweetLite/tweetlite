@@ -320,6 +320,29 @@ switch(cmd[2]) {
            console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
         }
         break;
+				case "unfavorite" :
+		    case "UF" :
+		        if(_.allKeys(nconf.get('users')).length > 0){
+		            var ques = qu.accountlist;
+		            ques[0].choices = _.allKeys(nconf.get('users'));
+		            inquirer.prompt(ques, function( answers ) {
+		                 var name = answers.select_account;
+		                 var confd = nconf.get('users:'+name);
+			               var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
+
+		                 T.Favorites({count:200,include_entities:false}).then(function(data){
+		                   return T.FullDestoryFavorite(data);
+		                 }).then(function(data){
+		                   console.log(`  ${clor.green('All favorites removed')}`);
+		                 }).catch(function(err){
+		                   console.err(err);
+		                 })
+
+		            });
+		        }else{
+		           console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
+		        }
+		        break;
     case "message":
     case "M":
         if(_.allKeys(nconf.get('users')).length > 0){
