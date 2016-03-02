@@ -9,6 +9,17 @@
   "bin": {
     "twitbot": "./bin/twitbot"
   },
+  "xo": {
+    "esnext": true,
+    "rules": {
+      "camelcase": [
+        2,
+        {
+          "properties": "never"
+        }
+      ]
+    }
+  },
   "preferGlobal": true,
   "repository": {
     "type": "git",
@@ -37,6 +48,7 @@
     "libnotify": "^1.0.4",
     "minimist": "^1.1.1",
     "nconf": "^0.7.2",
+    "object-assign": "^4.0.1",
     "optimist": "^0.6.1",
     "os-homedir": "^1.0.1",
     "trayballoon": "^1.0.4",
@@ -44,6 +56,6 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "xo": "^0.5.2"
+    "xo": "^0.12.1"
   }
 }

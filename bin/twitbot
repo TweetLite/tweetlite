@@ -1,9 +1,8 @@
 #! /usr/bin/env node
 
 var nconf = require('nconf');
-var parseArgs  = require('minimist');
-var inquirer = require("inquirer");
-var fs = require('fs');
+var parseArgs = require('minimist');
+var inquirer = require('inquirer');
 var _ = require('underscore');
 var clor = require('clor');
 var osHomedir = require('os-homedir');
@@ -13,375 +12,366 @@ var util = require('../lib/util.js');
 var forever = require('forever');
 var path = require('path');
 
-nconf.file({ file: path.join(osHomedir(),'.twitbotrc') });
+nconf.file({file: path.join(osHomedir(), '.twitbotrc')});
 
 var	args = parseArgs(process.argv);
-	  cmd  = args._;
+var cmd = args._;
 
 
-switch(cmd[2]) {
-    case "new" :
-    case "N" :
-         inquirer.prompt( qu.config, function( answers ) {
-        nconf.set('users:'+answers.username,answers);
-        nconf.save(function (err) {
-          if(err) console.error(err)
-          else console.log(`  ${clor.green('Transactions completed.')}`);
-        });
+switch (cmd[2]) {
+	case 'new' :
+	case 'N' :
+		inquirer.prompt(qu.config, function (answers) {
+			nconf.set('users:' + answers.username, answers);
+			nconf.save(function (err) {
+				if (err) {
+					console.error(err);
+				} else {
+					console.log(`  ${clor.green('Transactions completed.')}`);
+				}
+			});
 		});
-        break;
-    case "start":
-    case "S" :
-        if(_.allKeys(nconf.get('users')).length > 0){
-            var ques = qu.start;
-            ques[0].choices =_.allKeys(nconf.get('users'));
-            inquirer.prompt(ques, function( answers ) {
+		break;
+	case 'start':
+	case 'S':
+		if (_.allKeys(nconf.get('users')).length > 0) {
+						var ques = qu.start;
+					ques[0].choices = _.allKeys(nconf.get('users'));
+					inquirer.prompt(ques, function ( answers ) {
 
-                var name = answers.select_account;
-                var confd = nconf.get('users:'+name);
-                var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
+                	var name = answers.select_account;
+                	var confd = nconf.get('users:' + name);
+                	var T = new TT({consumer_key:confd.Consumer_Key, consumer_secret:confd.Consumer_Secret, access_token:confd.Access_Token, access_token_secret:confd.Access_Token_Secret});
 
-                T.FullSearch({q:answers.keyword,count:answers.takip_sayi, lang:confd.lang}).then(function(data){
+                	T.FullSearch({q:answers.keyword, count:answers.takip_sayi, lang:confd.lang}).then(function (data) {
 
-                  data = data.slice(0,answers.takip_sayi);
-                  return Promise.all([data,T.Blocks({stringify_ids:true})]);
+                  	data = data.slice(0, answers.takip_sayi);
+                  	return Promise.all([data, T.Blocks({stringify_ids:true})]);
 
-                }).then(function(data){
+                }).then(function (data) {
 
-                     var Twetlist = data[0];
-                     var Blacklist = data[1];
+                     	var Twetlist = data[0];
+                     	var Blacklist = data[1];
 
-                     var SearchUsersList = _.pluck(Twetlist, 'user_str');
+                     	var SearchUsersList = _.pluck(Twetlist, 'user_str');
 
-                     var FollowList = _.filter(Twetlist,function(twet){
-                         return _.indexOf(Blacklist.ids, twet.user_str) != -1;
+                     	var FollowList = _.filter(Twetlist, function (twet) {
+                         	return _.indexOf(Blacklist.ids, twet.user_str) !== -1;
                      });
 
-                    var list =[];
-                    if(answers.takip =="Yes"){
-                      list.push(T.FullUserFollow(_.pluck(FollowList, 'user_str')));
+                    	var list = [];
+                    	if (answers.takip =='Yes') {
+                      	list.push(T.FullUserFollow(_.pluck(FollowList, 'user_str')));
                     }
-                    if(answers.favorite =="Yes"){
-                      list.push(T.FullUserFavorite(_.pluck(FollowList, 'id_str')));
-                    }
-
-                       return Promise.all(list);
-                }).then(function(data){
-
-                    console.log(`  ${clor.green('Transactions completed.')}`);
-                    if(answers.takip =="Yes" && answers.favorite =="No"){
-                        var FollowCount = util.FollowCheck(data[0]);
-                        console.log(`  ${clor.yellow(FollowCount + " people were followed.")}`);
+                    	if (answers.favorite =='Yes') {
+                      	list.push(T.FullUserFavorite(_.pluck(FollowList, 'id_str')));
                     }
 
-                    if(answers.favorite =="Yes" && answers.takip =="No"){
-                        var FavoriteCount = util.FavoriteCheck(data[0]);
-                        console.log(`  ${clor.yellow(FavoriteCount + " tweets favorite added.")}`);
+                       	return Promise.all(list);
+                }).then(function (data) {
+
+                    	console.log(`  ${clor.green('Transactions completed.')}`);
+                    	if (answers.takip =='Yes' && answers.favorite =='No') {
+                        	var FollowCount = util.FollowCheck(data[0]);
+                        	console.log(`  ${clor.yellow(FollowCount + ' people were followed.')}`);
                     }
 
-                    if(answers.takip =="Yes" && answers.favorite =="Yes"){
-                        var FollowCount = util.FollowCheck(data[0]);
-                        var FavoriteCount = util.FavoriteCheck(data[1]);
-                        console.log(`  ${clor.yellow(FollowCount + " people were followed.")}`);
-                        console.log(`  ${clor.yellow(FavoriteCount + " tweets favorite added.")}`);
+                    	if (answers.favorite =='Yes' && answers.takip =='No') {
+                        	var FavoriteCount = util.FavoriteCheck(data[0]);
+                        	console.log(`  ${clor.yellow(FavoriteCount + ' tweets favorite added.')}`);
                     }
 
-                }).catch(function(Err){
-                  console.error(Err);
+                    	if (answers.takip =='Yes' && answers.favorite =='Yes') {
+                        	var FollowCount = util.FollowCheck(data[0]);
+                        	var FavoriteCount = util.FavoriteCheck(data[1]);
+                        	console.log(`  ${clor.yellow(FollowCount + ' people were followed.')}`);
+                        	console.log(`  ${clor.yellow(FavoriteCount + ' tweets favorite added.')}`);
+                    }
+
+                }).catch(function (Err) {
+                  	console.error(Err);
                 });
 
             });
-        }else{
-           console.log(`${clor.red('First, you must define an account [ > twitbot new]')}`);
+        } else {
+           	console.log(`${clor.red('First, you must define an account [ > twitbot new]')}`);
         }
-        break;
-    case "blacklist" :
-    case "B" :
-     	if(_.allKeys(nconf.get('users')).length > 0){
-            var ques = qu.blacklist;
-            ques[0].choices =_.allKeys(nconf.get('users'));
-            inquirer.prompt(ques, function( answers ) {
-                var name = answers.select_account;
-                var SearchName=answers.blacklist_username;
-                var confd = nconf.get('users:'+name);
-                var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
+        		break;
+    	case 'blacklist' :
+    	case 'B' :
+     			if (_.allKeys(nconf.get('users')).length > 0) {
+            	var ques = qu.blacklist;
+            	ques[0].choices = _.allKeys(nconf.get('users'));
+            	inquirer.prompt(ques, function ( answers ) {
+                	var name = answers.select_account;
+                	var SearchName = answers.blacklist_username;
+                	var confd = nconf.get('users:' + name);
+                	var T = new TT({consumer_key:confd.Consumer_Key, consumer_secret:confd.Consumer_Secret, access_token:confd.Access_Token, access_token_secret:confd.Access_Token_Secret});
 
-                T.UserLookup({screen_name:SearchName})
-                .then(function(data){
-                      if(typeof(data.id_str) == "undefined" && data.code == 50){
-                        return null;
-                      }else{
-                        return T.BlockCreate({user_id:data[0].id_str});
+                	T.UserLookup({screen_name:SearchName})
+                .then(function (data) {
+                      	if (typeof (data.id_str) === 'undefined' && data.code === 50) {
+                        	return null;
+                      } else {
+                        	return T.BlockCreate({user_id:data[0].id_str});
                       }
 
-                }).then(function(respons){
-                   if(respons == null ){
-                   console.log(`  ${clor.yellow('On behalf of these users did not find the account, make sure you spelled correctly.')}`);
-                        return null;
-                   }else{
-                      console.log(`  ${clor.green(util.Hal(respons.screen_name,'i') +" added to the banned list ..")}`);
-                      return T.Blocks();
+                }).then(function (respons) {
+                   	if (respons === null ) {
+                   	console.log(`  ${clor.yellow('On behalf of these users did not find the account, make sure you spelled correctly.')}`);
+                        	return null;
+                   } else {
+                      	console.log(`  ${clor.green(util.Hal(respons.screen_name, 'i') +' added to the banned list ..')}`);
+                      	return T.Blocks();
                    }
-                }).catch(function(Err){
-                  console.error(Err);
+                }).catch(function (Err) {
+                  	console.error(Err);
                 });
 
             });
-        }else{
-           console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
+        } else {
+           	console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
         }
-     	break;
-    case "live" :
-    case "L" :
-        var notification = args.notification ? args.notification : null;
-        if(_.allKeys(nconf.get('users')).length > 0){
-            var ques = qu.live;
-            ques[0].choices =_.allKeys(nconf.get('users'));
-            inquirer.prompt(ques, function( answers ) {
-                var name = answers.select_account;
-                var confd = nconf.get('users:'+name);
-                var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
-                var keywords=null;
-                if(typeof(answers.keywords)  !== "object"){
-                    keywords = answers.keywords.split(',');
-                }else{
-                    keywords = answers.keywords;
+     			break;
+    	case 'live' :
+    	case 'L' :
+        		var notification = args.notification ? args.notification : null;
+        		if (_.allKeys(nconf.get('users')).length > 0) {
+            	var ques = qu.live;
+            	ques[0].choices = _.allKeys(nconf.get('users'));
+            	inquirer.prompt(ques, function ( answers ) {
+                	var name = answers.select_account;
+                	var confd = nconf.get('users:' + name);
+                	var T = new TT({consumer_key:confd.Consumer_Key, consumer_secret:confd.Consumer_Secret, access_token:confd.Access_Token, access_token_secret:confd.Access_Token_Secret});
+                	var keywords = null;
+                	if (typeof (answers.keywords) !== 'object') {
+                    	keywords = answers.keywords.split(',');
+                } else {
+                    	keywords = answers.keywords;
                 }
 
-                var stream = T.Stream({ track: keywords, language:confd.lang })
-                console.log(`   ${clor.bgCyan.bold.inverse.white('  TWİTBOT LİVE TRACKİNG ⚫ ')}`);
-                stream.on('tweet', function (tweet) {
-                    T.StreamAction(tweet,notification,answers.favorite,answers.takip);
+                	var stream = T.Stream({track: keywords, language:confd.lang});
+                	console.log(`   ${clor.bgCyan.bold.inverse.white('  TWİTBOT LİVE TRACKİNG ⚫ ')}`);
+                	stream.on('tweet', function (tweet) {
+                    	T.StreamAction(tweet, notification, answers.favorite, answers.takip);
                 });
 
-                stream.on('disconnect', function (disconnectMessage) {
-                  console.log(`${clor.red('It ended the connection was lost to follow live')}`);
-                  process.exit(1);
+                	stream.on('disconnect', function (disconnectMessage) {
+                  	console.log(`${clor.red('It ended the connection was lost to follow live')}`);
+                  	process.exit(1);
                 });
 
 
             });
-        }else{
-           console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
+        } else {
+           	console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
         }
-        break;
-    case "forever" :
-    case "F" :
-      if(_.allKeys(nconf.get('users')).length >0){
+        		break;
+    	case 'forever' :
+    	case 'F' :
+      		if (_.allKeys(nconf.get('users')).length > 0) {
 
-         if(args.stop){
-          forever.list(false,function(err,_process){
+         	if (args.stop) {
+          	forever.list(false, function (err, _process) {
 
-              var twitbot = util.ForeverCheck(_process);
+              	var twitbot = util.ForeverCheck(_process);
 
-               if(twitbot.length > 0){
+               	if (twitbot.length > 0) {
 
-                  var plist = _process.map(function(item){
-                    return{
-                      foreverPid:item.foreverPid,
-                      pid:item.pid,
-                      uid:item.uid,
-                      name:item.uid.split('_')[1]
-                    }
+                  	var plist = _process.map(function (item) {
+                    	return {
+                      	foreverPid:item.foreverPid,
+                      	pid:item.pid,
+                      	uid:item.uid,
+                      	name:item.uid.split('_')[1]
+                    };
                   });
 
-                  var ques = qu._process;
-                  ques[0].choices =_.pluck(plist, 'name');
-                  inquirer.prompt(ques, function( answers ) {
-                       forever.stopbypid(_.pluck(_.filter(plist,function(item){
-                        return item.name === answers.select_pid;
+                  	var ques = qu._process;
+                  	ques[0].choices = _.pluck(plist, 'name');
+                  	inquirer.prompt(ques, function ( answers ) {
+                       	forever.stopbypid(_.pluck(_.filter(plist, function (item) {
+                        	return item.name === answers.select_pid;
                         }
                         ), 'pid')[0]);
-                       console.log(`${clor.green('Background stopped working bots. [ > twitbot F ]')}`);
-                  })
-               }else{
-                 console.log(`${clor.red('Background not working bots. [ > twitbot F ]')}`);
+                       	console.log(`${clor.green('Background stopped working bots. [ > twitbot F ]')}`);
+                  });
+               } else {
+                 	console.log(`${clor.red('Background not working bots. [ > twitbot F ]')}`);
                }
 
 
           });
-        }else{
-          var ques = qu.live;
-              ques[0].choices =_.allKeys(nconf.get('users'));
-              inquirer.prompt(ques, function( answers ) {
-                  var name = answers.select_account;
-                  var confd = nconf.get('users:'+name);
+        } else {
+          	var ques = qu.live;
+              	ques[0].choices = _.allKeys(nconf.get('users'));
+              	inquirer.prompt(ques, function ( answers ) {
+                  	var name = answers.select_account;
+                  	var confd = nconf.get('users:' + name);
 
-                  var keywords=null;
-                  if(typeof(answers.keywords)  !== "object"){
-                      keywords = answers.keywords.split(',');
-                  }else{
-                      keywords = answers.keywords;
+                  	var keywords = null;
+                  	if (typeof (answers.keywords) !== 'object') {
+                      	keywords = answers.keywords.split(',');
+                  } else {
+                      	keywords = answers.keywords;
                   }
 
 
-                  var monitor = forever.startDaemon(path.join(__dirname,'../lib/worker.js'),{
-                    uid:"twitbot_"+name,args:['--keywords='+keywords.toString(),
-                                        '--favorite='+answers.favorite,
-                                        '--notification='+notification,
-                                        '--name='+name,
-                                        '--takip='+answers.takip]});
+                  	var monitor = forever.startDaemon(path.join(__dirname, '../lib/worker.js'), {
+                    	uid:"twitbot_" + name, args:['--keywords=' + keywords.toString(),
+                                        '--favorite=' + answers.favorite,
+                                        '--notification=' + notification,
+                                        '--name=' + name,
+                                        '--takip=' + answers.takip]});
 
               });
 
         }
 
-      }else{
-        console.log(`${clor.red('First, you must define an account  [ > twitbot new ]')}`);
+      } else {
+        	console.log(`${clor.red('First, you must define an account  [ > twitbot new ]')}`);
       }
 
-      break;
-    case "worker":
-    case "W":
+      		break;
+    	case 'worker':
+    	case 'W':
 
-        if(typeof process.env.twitbotUsername != 'undefined' &&
-           typeof process.env.twitbotConsumerKey != 'undefined' &&
-           typeof process.env.twitbotConsumerSecret != 'undefined' &&
-           typeof process.env.twitbotAccessToken != 'undefined' &&
-           typeof process.env.twitbotAccessTokenSecret != 'undefined' &&
-           typeof process.env.twitbotlang != 'undefined' &&
-           typeof process.env.twitbotFollow != 'undefined' &&
-           typeof process.env.twitbotFavorite != 'undefined' &&
-           typeof process.env.twitbotKeywords != 'undefined'
-          ){
+        		if (typeof process.env.twitbotUsername !== 'undefined' &&
+           typeof process.env.twitbotConsumerKey !== 'undefined' &&
+           typeof process.env.twitbotConsumerSecret !== 'undefined' &&
+           typeof process.env.twitbotAccessToken !== 'undefined' &&
+           typeof process.env.twitbotAccessTokenSecret !== 'undefined' &&
+           typeof process.env.twitbotlang !== 'undefined' &&
+           typeof process.env.twitbotFollow !== 'undefined' &&
+           typeof process.env.twitbotFavorite !== 'undefined' &&
+           typeof process.env.twitbotKeywords !== 'undefined'
+          ) {
 
-            if(!args.stop){
+            	if (!args.stop) {
 
-                var monitor = forever.startDaemon(path.join(__dirname,'../lib/worker.js'),{
-                  uid:"twitbot_"+ process.env.twitbotUsername});
+                	var monitor = forever.startDaemon(path.join(__dirname, '../lib/worker.js'), {
+                  	uid:"twitbot_" + process.env.twitbotUsername});
 
 
-			}else{
-                forever.list(false,function(err,_process){
+} else {
+                	forever.list(false, function (err, _process) {
 
-                    var twitbot = util.ForeverCheck(_process);
+                    	var twitbot = util.ForeverCheck(_process);
 
-                     if(twitbot.length > 0){
+                     	if (twitbot.length > 0) {
 
-                        var plist = _process.map(function(item){
-                          return{
-                            foreverPid:item.foreverPid,
-                            pid:item.pid,
-                            uid:item.uid,
-                            name:item.uid.split('_')[1]
-                          }
+                        	var plist = _process.map(function (item) {
+                          	return {
+                            	foreverPid:item.foreverPid,
+                            	pid:item.pid,
+                            	uid:item.uid,
+                            	name:item.uid.split('_')[1]
+                          };
                         });
 
-                        var ques = qu._process;
-                        ques[0].choices =_.pluck(plist, 'name');
-                        inquirer.prompt(ques, function( answers ) {
-                             forever.stopbypid(_.pluck(_.filter(plist,function(item){
-                              return item.name === answers.select_pid;
+                        	var ques = qu._process;
+                        	ques[0].choices = _.pluck(plist, 'name');
+                        	inquirer.prompt(ques, function ( answers ) {
+                             	forever.stopbypid(_.pluck(_.filter(plist, function (item) {
+                              	return item.name === answers.select_pid;
                               }
                               ), 'pid')[0]);
-                             console.log(`${clor.green('Background stopped working bots. [ > twitbot F ]')}`);
-                        })
-                     }else{
-                       console.log(`${clor.red('Background not working bots. [ > twitbot F ]')}`);
+                             	console.log(`${clor.green('Background stopped working bots. [ > twitbot F ]')}`);
+                        });
+                     } else {
+                       	console.log(`${clor.red('Background not working bots. [ > twitbot F ]')}`);
                      }
 
 
                 });
-			}
+}
 
-        }else{
-            console.log(`${clor.red('First, you must define an environment ')}`);
+        } else {
+            	console.log(`${clor.red('First, you must define an environment ')}`);
         }
 
 
-      break;
-    case "flush" :
-    case "FL" :
-     	 nconf.remove('users');
-       nconf.save(function (err) {
-          if(err) console.error(err)
-          console.log(`  ${clor.green('Transactions completed...')}`);
+      		break;
+    	case 'flush' :
+    	case 'FL' :
+     	 		nconf.remove('users');
+       		nconf.save(function (err) {
+          	if (err) console.error(err);
+          	console.log(`  ${clor.green('Transactions completed...')}`);
        });
-    	break;
-    case "unfollow" :
-    case "U" :
-        if(_.allKeys(nconf.get('users')).length > 0){
-            var ques = qu.accountlist;
-            ques[0].choices = _.allKeys(nconf.get('users'));
-            inquirer.prompt(ques, function( answers ) {
-                 var name = answers.select_account;
-                 var confd = nconf.get('users:'+name);
-	               var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
+    			break;
+    	case 'unfollow' :
+    	case 'U' :
+        		if (_.allKeys(nconf.get('users')).length > 0) {
+            	var ques = qu.accountlist;
+            	ques[0].choices = _.allKeys(nconf.get('users'));
+            	inquirer.prompt(ques, function ( answers ) {
+                 	var name = answers.select_account;
+                 	var confd = nconf.get('users:' + name); var T = new TT({consumer_key:confd.Consumer_Key, consumer_secret:confd.Consumer_Secret, access_token:confd.Access_Token, access_token_secret:confd.Access_Token_Secret});
 
-                 T.NotFollowingList().then(function(data){
-                   return T.FullUserDestroy(data);
-                 }).then(function(){
-                    console.log(`  ${clor.green("users were not following unfollow..")}`);
-                 }).catch(function(err){
-                    console.log(err);
+                 	T.NotFollowingList().then(function (data) {
+                   	return T.FullUserDestroy(data);
+                 }).then(function () {
+                    	console.log(`  ${clor.green('users were not following unfollow..')}`);
+                 }).catch(function (err) {
+                    	console.log(err);
                  });
             });
-        }else{
-           console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
+        } else {
+           	console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
         }
-        break;
-				case "unfavorite" :
-		    case "UF" :
-		        if(_.allKeys(nconf.get('users')).length > 0){
-		            var ques = qu.accountlist;
-		            ques[0].choices = _.allKeys(nconf.get('users'));
-		            inquirer.prompt(ques, function( answers ) {
-		                 var name = answers.select_account;
-		                 var confd = nconf.get('users:'+name);
-			               var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
+        		break;
+	case 'unfavorite' : case 'UF' : if (_.allKeys(nconf.get('users')).length > 0) {
+		            	var ques = qu.accountlist;
+		            	ques[0].choices = _.allKeys(nconf.get('users'));
+		            	inquirer.prompt(ques, function ( answers ) {
+		                 	var name = answers.select_account;
+		                 	var confd = nconf.get('users:' + name); var T = new TT({consumer_key:confd.Consumer_Key, consumer_secret:confd.Consumer_Secret, access_token:confd.Access_Token, access_token_secret:confd.Access_Token_Secret});
 
-		                 T.Favorites({count:200,include_entities:false}).then(function(data){
-		                   return T.FullDestoryFavorite(data);
-		                 }).then(function(data){
-		                   console.log(`  ${clor.green('All favorites removed')}`);
-		                 }).catch(function(err){
-		                   console.err(err);
-		                 })
+		                 	T.Favorites({count:200, include_entities:false}).then(function (data) {
+		                   	return T.FullDestoryFavorite(data); }).then(function (data) {
+		                   	console.log(`  ${clor.green('All favorites removed')}`); }).catch(function (err) {
+		                   	console.err(err); }) }); } else {
+		           	console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`); } break;
+    	case 'message':
+    	case 'M':
+        		if (_.allKeys(nconf.get('users')).length > 0) {
+            	var ques = qu.messagelist;
+            	ques[0].choices = _.allKeys(nconf.get('users'));
+            	inquirer.prompt(ques, function ( answers ) {
 
-		            });
-		        }else{
-		           console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
-		        }
-		        break;
-    case "message":
-    case "M":
-        if(_.allKeys(nconf.get('users')).length > 0){
-            var ques = qu.messagelist;
-            ques[0].choices =_.allKeys(nconf.get('users'));
-            inquirer.prompt(ques, function( answers ) {
+                	var name = answers.select_account;
+                	var confd = nconf.get('users:' + name);
+                	var T = new TT({consumer_key:confd.Consumer_Key, consumer_secret:confd.Consumer_Secret, access_token:confd.Access_Token, access_token_secret:confd.Access_Token_Secret});
 
-                var name = answers.select_account;
-                var confd = nconf.get('users:'+name);
-                var T = new TT({consumer_key:confd.Consumer_Key,consumer_secret:confd.Consumer_Secret,access_token:confd.Access_Token,access_token_secret:confd.Access_Token_Secret});
-
-                if(answers.send =="Yes" && answers.message){
-                    T.Followers()
-                   .then(function(data){
-                      data = data.ids.slice(0,answers.limit);
-                      return T.FullUserMessage(data,answers.message)
-                    }).then(function(respons){
-                        var MessageCount = respons.length;
-                        console.log(`  ${clor.green('Persons posted '+ MessageCount +' messages ')}`);
-                    }).catch(function(err){
-                        console.error(err);
+                	if (answers.send =='Yes' && answers.message) {
+                    	T.Followers()
+                   .then(function (data) {
+                      	data = data.ids.slice(0, answers.limit);
+                      	return T.FullUserMessage(data, answers.message);
+                    }).then(function (respons) {
+                        	var MessageCount = respons.length;
+                        	console.log(`  ${clor.green('Persons posted ' + MessageCount + ' messages ')}`);
+                    }).catch(function (err) {
+                        	console.error(err);
                     });
-                }else{
-                    console.log(`${clor.red('Come back when he decided to take a message..')}`);
+                } else {
+                    	console.log(`${clor.red('Come back when he decided to take a message..')}`);
                 }
 
-            });
-        }else{
-          console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
-        }
-    break;
-    case "version":
-    case "V":
-        console.log(require('../package.json').version);
-        break;
-    case "help":
-    case "H":
-        util.help();
-        break;
-    default:
-    util.help();
+    		});
+    } else {
+    	console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`);
+    }
+		break;
+    case 'version':
+    case 'V':
+		console.log(require('../package.json').version);
+		break;
+		case 'help':
+    case 'H' :
+		util.help();
+		break;
+	default:
+		util.help();
 }
