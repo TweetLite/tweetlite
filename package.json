@@ -1,6 +1,6 @@
 {
   "name": "twitbot",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Twitter bots for cli..",
   "main": "index.js",
   "scripts": {
