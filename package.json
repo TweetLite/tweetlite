@@ -2,7 +2,7 @@
   "name": "twitbot",
   "version": "0.2.6",
   "description": "Twitter bots for cli..",
-  "main": "index.js",
+  "main": "/dist/twit.js",
   "scripts": {
     "test": "xo"
   },
@@ -23,7 +23,7 @@
   "preferGlobal": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ayhankuru/twitbot.git"
+    "url": "git+https://github.com/c0b41/twitbot.git"
   },
   "keywords": [
     "twitter",
@@ -31,12 +31,12 @@
     "cli",
     "follow"
   ],
-  "author": "Ayhan Kuru <cobaimelan@protonmail.ch> (http://www.github.com/ayhankuru)",
+  "author": "Ayhan <cobaimelan@protonmail.ch> (http://www.github.com/c0b41)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ayhankuru/twitbot/issues"
+    "url": "https://github.com/c0b41/twitbot/issues"
   },
-  "homepage": "https://github.com/ayhankuru/twitbot#readme",
+  "homepage": "https://github.com/c0b41/twitbot#readme",
   "dependencies": {
     "async": "^1.4.0",
     "bluebird": "^2.9.34",
