@@ -167,3 +167,61 @@
 				forever.startDaemon(path.join(__dirname, '../worker.js'), {uid: `twitbot_${process.env.twitbotUsername}`});
 			}
 			break;
+
+
+
+
+
+	streamAction(twet, notification, favorite, takip) {
+		const dump = [];
+		let msg = null;
+
+		if (!twet.retweeted_status) {
+			Promise.all([this.blocks({stringify_ids: true}), this.friends({stringify_ids: true})]).then(data => {
+				if (!_.matches(data[0].ids, twet.user.id_str) && !_.matches(data[1].ids, twet.user.id_str)) {
+					if (takip === 'Yes') {
+						dump.push(this.userCreate({user_id: twet.user.id_str, follow: true}));
+					}
+
+					if (favorite === 'Yes') {
+						dump.push(this.favorite({id: twet.id_str}));
+					}
+
+					if (takip === 'Yes' && favorite === 'Yes') {
+						msg = `takip ettik ve twet'ini favorilere ekledik`;
+					} else if (takip === 'Yes') {
+						msg = ` takip ettik `;
+					} else if (favorite === 'Yes') {
+						msg = ` twet'ini favorilere ekledik`;
+					}
+				} else {
+					dump.push(null);
+				}
+
+				dump.push(msg);
+
+				return Promise.all(dump);
+			}).then(data => {
+				if (data[0] !== null && !_.has(data[0], 'errors')) {
+					let message = null;
+					if (typeof data[1] === 'string') {
+						message = data[1];
+					}
+
+					if (typeof data[2] === 'string') {
+						message = data[2];
+					}
+
+					console.log(`${clor.green(util.hal(twet.user.screen_name, 'i'))}	${clor.green(message)}`);
+
+					if (notification && notification !== null) {
+						if (os.platform() === 'linux') {
+							libnotify.notify(message, {title: `${util.hal(twet.user.screen_name, 'i')}`, image: 'twitbot'});
+						} else if (os.platform() === 'win32') {
+							trayballoon({text: `${util.hal(twet.user.screen_name, 'i')} ${message}`, icon: '../assets/48.ico', timeout: 20000});
+						}
+					}
+				}
+			});
+		}
+	}
