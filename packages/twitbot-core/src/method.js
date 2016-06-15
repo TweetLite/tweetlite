@@ -11,11 +11,7 @@ export default {
 		path: 'friends/ids',
 		method: 'get'
 	},
-	userLookup: {
-		path: 'users/lookup',
-		method: 'get'
-	},
-	favorite: {
+	favoriteCreate: {
 		path: 'favorites/create',
 		method: 'post'
 	},
