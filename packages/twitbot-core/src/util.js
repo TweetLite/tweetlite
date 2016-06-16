@@ -4,9 +4,12 @@ import objectAssign from 'object-assign'
 
 export function inject(methods) {
 	methods.forEach(item => {
-		this[item] = obj => {
+		this[item] = params => {
+			if (item.method === 'stream') {
+				return this.T.stream(item.path, params || {})
+			}
 			return new Promise((resolve, reject) => {
-				this.T[method[item].method](method[item].path, obj || {}, (err, data) => { // eslint-disable-line
+				this.T[item.method](item.path, params || {}, (err, data) => {
 					if (err && err.statusCode !== 403) {
 						reject(err)
 					} else {

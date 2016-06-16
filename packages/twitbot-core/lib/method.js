@@ -1,4 +1,9 @@
-export default {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.default = {
 	followers: {
 		path: 'followers/ids',
 		method: 'get'
@@ -43,4 +48,5 @@ export default {
 		path: 'statuses/filter',
 		method: 'stream'
 	}
-}
+};
+module.exports = exports['default'];
