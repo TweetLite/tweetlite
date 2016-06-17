@@ -30,10 +30,10 @@ export function start(cmd, extra, version) {
 						let favoriteList = null
 						let userList = null
 						if (answers.favorite === 'Yes') {
-							favoriteList	= await T.fullTwetFavorite(twetList.map(item => item.id))
+							favoriteList	= await T.fullTwetFavorite(twetList.filter(twet => answers.select_account !== twet.user.screen_name).map(twet => twet.id))
 						}
 						if (answers.takip === 'Yes') {
-							userList = await T.fullUserFollow(twetList.map(item => item.user.id))
+							userList = await T.fullUserFollow(twetList.filter(twet => answers.select_account !== twet.user.screen_name).map(twet => twet.user.id))
 						}
 						console.log(`  ${clor.green('Transactions completed.')}`)
 						if (answers.takip === 'Yes') {
