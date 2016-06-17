@@ -2,7 +2,8 @@ import clor from 'clor'
 import loudRejection from 'loud-rejection'
 import TwitBot from 'twitbot-core'
 import * as util from 'twitbot-util'
-
+import debug from 'debug'
+const log = debug('twitbot')
 loudRejection()
 
 export function start(cmd, extra, version) {
@@ -14,7 +15,7 @@ export function start(cmd, extra, version) {
 					const result = await util.settingsSave(`users:${answers.username}`, answers)
 					console.log(`  ${clor.green(result)}`)
 				} catch (err) {
-					console.log(err)
+					log(err)
 				}
 			})()
 			break
@@ -42,7 +43,7 @@ export function start(cmd, extra, version) {
 							console.log(`  ${clor.yellow(`${favoriteList.length}  tweets favorite added.`)}`)
 						}
 					} catch (err) {
-						console.log(err)
+						log(err)
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
@@ -62,7 +63,7 @@ export function start(cmd, extra, version) {
 						clearInterval(msg)
 						console.log(`  ${clor.green('All favorites removed')}`)
 					} catch (err) {
-						console.log(err)
+						log(err)
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
@@ -79,7 +80,7 @@ export function start(cmd, extra, version) {
 						const msg = await util.settingsSave(`users`, users)
 						console.log(msg)
 					} catch (err) {
-						console.log(err)
+						log(err)
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
@@ -105,7 +106,7 @@ export function start(cmd, extra, version) {
 							console.log(`${clor.red('Come back when he decided to take a message..')}`)
 						}
 					} catch (err) {
-						console.log(err)
+						log(err)
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
@@ -125,7 +126,7 @@ export function start(cmd, extra, version) {
 							console.log(`${clor.red(`${result.length} users unfollowed..`)}`)
 						}
 					} catch (err) {
-						console.log(err)
+						log(err)
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
