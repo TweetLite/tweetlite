@@ -133,6 +133,22 @@ export function start(cmd, extra, version) {
 				}
 			})()
 			break
+		case 'watch' :
+			(async() => {
+				if (util.checkUser()) {
+					try {
+						const answers = await util.prompt('accountlist')
+						const confd = util.getUser(answers.select_account)
+						const T = new TwitBot(confd)
+
+					} catch (err) {
+						log(err)
+					}
+				} else {
+					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
+				}
+			})()
+			break
 		case 'version':
 			console.log(version)
 			break
