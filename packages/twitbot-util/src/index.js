@@ -91,6 +91,20 @@ export function spinnerMsg(msg, opt) {
 	}, spinner.interval)
 }
 
+export function control(twet, ...blacklist) {
+	const results = _.flattenDeep(blacklist).map(func => func(twet))
+	if (results.indexOf(false) === -1) {
+		return true
+	}
+	return false
+}
+
+export function action(twet, args, context, ...middlewares) {
+	_.flattenDeep(middlewares).forEach(middleware => {
+		middleware.call(context, twet, args)
+	})
+}
+
 export {twitbotSettings}
 
 export {twitbotWorkerData}
