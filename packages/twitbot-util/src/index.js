@@ -6,9 +6,9 @@ import logUpdate from 'log-update'
 import nconf from 'nconf'
 import osHomedir from 'os-homedir'
 import inquirer from 'inquirer'
-import * as question from './question'
-const spinner = Spinners.moon
+import question from './question'
 
+const spinner = Spinners.moon
 const twitbotSettings = nconf
 const twitbotWorkerData = nconf
 

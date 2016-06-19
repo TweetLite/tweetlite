@@ -13,7 +13,7 @@ export function inject(methods) {
 					if (err && err.statusCode !== 403) {
 						reject(err)
 					} else {
-						resolve(data)
+						resolve(data) // sonuç içerisindeki hataları yakala 
 					}
 				})
 			})
