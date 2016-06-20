@@ -1,11 +1,12 @@
 import Twit from 'twit'
 import _ from 'lodash'
 import promiseSeries from 'promise-series2'
-import babelPolyfill from 'babel-polyfill' // eslint-disable-line
+import babelPolyfill from 'babel-polyfill' // eslint-disable-line no-unused-vars
 import objectAssign from 'object-assign'
 import method from './method'
-const fmethods = _.keys(method)
 import * as util from './util'
+
+const fmethods = _.keys(method)
 
 export default class TwitBot {
 	constructor(obj) {
@@ -30,15 +31,15 @@ export default class TwitBot {
 		}
 
 		this.extra.fullUserFollow = list => {
-			return promiseSeries(user_id => this.userCreate({user_id}), list) // eslint-disable-line
+			return promiseSeries(user_id => this.userCreate({user_id}), list) // eslint-disable-line camelcase
 		}
 
 		this.extra.fullUserDestroy = list => {
-			return promiseSeries(user_id => this.userDestroy({user_id}), list) // eslint-disable-line
+			return promiseSeries(user_id => this.userDestroy({user_id}), list) // eslint-disable-line camelcase
 		}
 
 		this.extra.fullUserMessage = (list, msg) => {
-			return promiseSeries(user_id => this.messageCreate({ user_id,text: msg}), list) // eslint-disable-line
+			return promiseSeries(user_id => this.messageCreate({user_id, text: msg}), list)// eslint-disable-line camelcase
 		}
 
 		this.extra.fullFollowers = async(opt = {count: 5000}) => {
@@ -75,8 +76,8 @@ export default class TwitBot {
 				const followers = await this.followers()
 				const friends = await this.friends()
 				return opt === true ? followers.ids : _.difference(followers.ids, friends.ids)
-			} catch (e) {
-				console.log(e)
+			} catch (err) {
+				return err
 			}
 		}
 	}

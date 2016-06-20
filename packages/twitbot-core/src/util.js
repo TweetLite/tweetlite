@@ -12,8 +12,10 @@ export function inject(methods) {
 				this.T[item.method](item.path, params || {}, (err, data) => {
 					if (err && err.statusCode !== 403) {
 						reject(err)
+					} else if (data.errors) {
+						reject(new Error(`Seems like error, ${data.errors} `))
 					} else {
-						resolve(data) // sonuç içerisindeki hataları yakala 
+						resolve(data)
 					}
 				})
 			})
@@ -78,7 +80,7 @@ export function FullSearch(obj = {}) {
 	const loadTwit = ((obj, cb) => {
 		return this.search(obj).then(data => {
 			dump.push(data.statuses)
-			if (data.search_metadata.next_results !== undefined || count !== limit && count < limit) {
+			if (data.search_metadata.next_results !== undefined || (count !== limit && count < limit)) {
 				query.max_id = query.max_id = (/max_id=([^&]*)/g).exec(data.search_metadata.next_results)[1]
 				loadTwit(query, cb)
 				count++

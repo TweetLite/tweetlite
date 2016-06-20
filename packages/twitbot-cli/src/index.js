@@ -3,6 +3,7 @@ import loudRejection from 'loud-rejection'
 import TwitBot from 'twitbot-core'
 import * as util from 'twitbot-util'
 import debug from 'debug'
+
 const log = debug('twitbot')
 loudRejection()
 
@@ -29,11 +30,12 @@ export function start(cmd, extra, version) {
 						const twetList = await T.searchFollow({q: answers.keyword, takip_sayi: answers.takip_sayi, lang: confd.lang})
 						let favoriteList = null
 						let userList = null
+						const checkName = util.notActionHimself(answers.select_account)
 						if (answers.favorite === 'Yes') {
-							favoriteList	= await T.fullTwetFavorite(twetList.filter(twet => answers.select_account !== twet.user.screen_name).map(twet => twet.id))
+							favoriteList	= await T.fullTwetFavorite(twetList.filter(twet => checkName(twet) !== false).map(twet => twet.id))
 						}
 						if (answers.takip === 'Yes') {
-							userList = await T.fullUserFollow(twetList.filter(twet => answers.select_account !== twet.user.screen_name).map(twet => twet.user.id))
+							userList = await T.fullUserFollow(twetList.filter(twet => checkName(twet) !== false).map(twet => twet.user.id))
 						}
 						console.log(`  ${clor.green('Transactions completed.')}`)
 						if (answers.takip === 'Yes') {
