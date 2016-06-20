@@ -91,6 +91,15 @@ export function spinnerMsg(msg, opt) {
 	}, spinner.interval)
 }
 
+export function notActionHimself(username) {
+	return function (twet) {
+		if (twet.user.screen_name.toLowerCase() === username.toLowerCase()) {
+			return false
+		}
+		return true
+	}
+}
+
 export function control(twet, ...blacklist) {
 	const results = _.flattenDeep(blacklist).map(func => func(twet))
 	if (results.indexOf(false) === -1) {
