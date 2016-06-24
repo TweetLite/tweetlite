@@ -139,10 +139,34 @@ export function start(cmd, extra, version) {
 			(async() => {
 				if (util.checkUser()) {
 					try {
-						const answers = await util.prompt('accountlist')
+						const answers = await util.prompt('accountlist') // if worker select accountlist && not worker watch question
 						const confd = util.getUser(answers.select_account)
 						const T = new TwitBot(confd)
 
+						let keywords = null
+						if (typeof answers.keywords === 'object') {
+							keywords = answers.keywords
+						} else {
+							keywords = answers.keywords.split(',')
+						}
+
+						const blocks = await T.extra.fullBlocks()
+						const notActionHimself = util.notActionHimself(answers.username)
+						const notActionBlocks = util.notActionBlocks(blocks)
+
+						const stream = T.tweetStream({track: keywords, language: confd.lang})
+
+						stream.on('tweet', twet => {
+							if (util.control(twet, [notActionHimself, notActionBlocks])) {
+								// pass to action example
+								// util.action(twet,['--bar=true','--foo=false'],mytwet(),mytwet2(),[mytwet(),mytwet2()])
+							}
+						})
+
+						stream.on('disconnect', disconnectMessage => {
+							console.log(disconnectMessage)
+							stream.start()
+						})
 					} catch (err) {
 						log(err)
 					}

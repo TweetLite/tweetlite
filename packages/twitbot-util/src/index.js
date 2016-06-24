@@ -100,6 +100,15 @@ export function notActionHimself(username) {
 	}
 }
 
+export function notActionBlocks(blocks) {
+	return function (twet) {
+		if (blocks.indexOf(twet.user.id) === -1) {
+			return true
+		}
+		return false
+	}
+}
+
 export function control(twet, ...blacklist) {
 	const results = _.flattenDeep(blacklist).map(func => func(twet))
 	if (results.indexOf(false) === -1) {
@@ -108,9 +117,46 @@ export function control(twet, ...blacklist) {
 	return false
 }
 
+export function actionFavorite() {
+	return async twet => {
+		try {
+			const favoriteResult = await this.favoriteCreate({id: twet.id})
+
+			if (favoriteResult.favorited === false) {
+				return true
+			}
+			if (_.has(favoriteResult, 'errors')) {
+				return new Error(favoriteResult.errors[0].message)
+			}
+		} catch (err) {
+			return err
+		}
+		return false
+	}
+}
+
+export function actionUserFollow() {
+	return async twet => {
+		try {
+			const followResult = await this.userCreate({user_id: twet.user.id_str, follow: true})
+
+			if (followResult.following === true) {
+				return true
+			}
+
+			if (_.has(followResult, 'errors')) {
+				return new Error(followResult.errors[0].message)
+			}
+		} catch (err) {
+			return err
+		}
+		return false
+	}
+}
+
 export function action(twet, args, context, ...middlewares) {
 	_.flattenDeep(middlewares).forEach(middleware => {
-		middleware.call(context, twet, args)
+		middleware.call(context, twet, args) // promise call && also error handling
 	})
 }
 

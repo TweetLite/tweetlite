@@ -122,29 +122,7 @@ export const search = [
 	}
 ]
 
-export const blacklist = [
-	{
-		type: 'list',
-		name: 'select_account',
-		message: 'Select account?'
-	},
-	{
-		type: 'input',
-		name: 'blacklist_username',
-		message: 'Enter the User Name ?',
-		validate(value) {
-			let that = null
-			if (value === '' && !value) {
-				that = 'Do not leave empty'
-			} else {
-				that = true
-			}
-			return that
-		}
-	}
-]
-
-export const live = [
+export const watch = [
 	{
 		type: 'list',
 		name: 'select_account',
