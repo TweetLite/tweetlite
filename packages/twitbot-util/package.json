@@ -1,6 +1,6 @@
 {
   "name": "twitbot-util",
-  "version": "0.1.0-beta1",
+  "version": "0.1.0-alpha1",
   "description": "twitbot-util package",
   "main": "lib/index.js",
   "scripts": {

@@ -197,6 +197,9 @@ export function start(cmd, extra, version) {
 				}
 			})()
 			break
+		case 'worker':
+			
+			break
 		case 'version':
 			console.log(version)
 			break
