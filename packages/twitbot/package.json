@@ -34,7 +34,9 @@
   },
   "homepage": "https://github.com/c0b41/twitbot#readme",
   "dependencies": {
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "twitbot-cli": "0.1.0-beta1",
+    "twitbot-core": "0.1.0-beta1"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",

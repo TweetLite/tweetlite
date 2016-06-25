@@ -36,7 +36,6 @@
   },
   "homepage": "https://github.com/c0b41/twitbot#readme",
   "dependencies": {
-    "babel-polyfill": "^6.9.1",
     "lodash": "^4.13.1",
     "object-assign": "^4.1.0",
     "promise-series2": "^1.1.0",
