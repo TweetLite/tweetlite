@@ -139,27 +139,49 @@ export function start(cmd, extra, version) {
 			(async() => {
 				if (util.checkUser()) {
 					try {
-						const answers = await util.prompt('accountlist') // if worker select accountlist && not worker watch question
-						const confd = util.getUser(answers.select_account)
-						const T = new TwitBot(confd)
-
-						let keywords = null
-						if (typeof answers.keywords === 'object') {
-							keywords = answers.keywords
+						let query = null
+						let confd = null
+						let username = null
+						const actionList = []
+						const actionBlacklist = []
+						if (extra.worker || extra.username || extra.query) {
+							confd = util.getUser(extra.username)
+							query = extra.query
+							username = extra.username
 						} else {
-							keywords = answers.keywords.split(',')
+							const answers = await util.prompt('watch')
+							confd = util.getUser(answers.select_account)
+							query = answers.keywords
+							username = answers.select_account
 						}
 
+						if (extra.use) {
+							const extraMiddleware = require(extra)
+							if (extraMiddleware.use) {
+								actionList.push(extraMiddleware.use())
+							} else {
+								actionList.push(util.actionFavorite())
+								actionList.push(util.actionUserFollow())
+							}
+
+							if (extraMiddleware.blacklist) {
+								actionBlacklist.push(extraMiddleware.blacklist(extra))
+							}
+						}
+
+						const T = new TwitBot(confd)
+
+						const keywords = query.split(',')
+
 						const blocks = await T.extra.fullBlocks()
-						const notActionHimself = util.notActionHimself(answers.username)
-						const notActionBlocks = util.notActionBlocks(blocks)
+						actionBlacklist.push(util.notActionHimself(username))
+						actionBlacklist.push(util.notActionBlocks(blocks))
 
 						const stream = T.tweetStream({track: keywords, language: confd.lang})
 
 						stream.on('tweet', twet => {
-							if (util.control(twet, [notActionHimself, notActionBlocks])) {
-								// pass to action example
-								// util.action(twet,['--bar=true','--foo=false'],mytwet(),mytwet2(),[mytwet(),mytwet2()])
+							if (util.control(twet, actionBlacklist)) {
+								util.action(twet, extra, actionList)
 							}
 						})
 
