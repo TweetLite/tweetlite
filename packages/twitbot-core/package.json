@@ -1,6 +1,6 @@
 {
   "name": "twitbot-core",
-  "version": "0.1.0",
+  "version": "0.1.0-beta1",
   "description": "twitbot-core package",
   "main": "lib/index.js",
   "scripts": {
