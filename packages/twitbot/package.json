@@ -2,12 +2,12 @@
   "name": "twitbot",
   "version": "0.3.0-alpha1",
   "description": "Twitter bots for cli..",
-  "main": "./lib/index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "prebuild": "rimraf ./lib",
+    "prebuild": "rimraf ./dist",
     "prepublish": "npm run build",
-    "build": "babel ./src --out-dir ./lib",
-    "test": "xo ./lib"
+    "build": "babel ./src --out-dir ./dist",
+    "test": "xo ./src"
   },
   "bin": {
     "twitbot": "./bin/twitbot"

@@ -2,11 +2,11 @@
   "name": "twitbot-util",
   "version": "0.1.0-alpha1",
   "description": "twitbot-util package",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "prebuild": "rimraf ./lib",
+    "prebuild": "rimraf ./dist",
     "prepublish": "npm run build",
-    "build": "babel ./src --out-dir ./lib",
+    "build": "babel ./src --out-dir ./dist",
     "test": "xo ./src"
   },
   "xo": {
@@ -48,6 +48,7 @@
   "dependencies": {
     "cli-spinners": "^0.1.2",
     "clor": "^2.0.2",
+    "forever": "^0.15.2",
     "inquirer": "^1.0.3",
     "lodash": "^4.13.1",
     "log-update": "^1.0.2",

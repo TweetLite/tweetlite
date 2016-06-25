@@ -2,12 +2,12 @@
   "name": "twitbot-core",
   "version": "0.1.0-alpha1",
   "description": "twitbot-core package",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "prebuild": "rimraf ./lib",
+    "prebuild": "rimraf ./dist",
     "prepublish": "npm run build",
-    "build": "babel ./src --out-dir ./lib",
-    "test": "xo ./src"
+    "build": "babel ./src --out-dir ./dist",
+    "test": "xo ./dist"
   },
   "xo": {
     "esnext": true,

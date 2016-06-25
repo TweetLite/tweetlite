@@ -201,7 +201,7 @@ export const messagelist = [
 		choices: ['Yes', 'No']
 	}
 ]
-export const __process = [
+export const process = [
 	{
 		type: 'list',
 		name: 'select_pid',
