@@ -197,6 +197,25 @@ export function start(cmd, extra, version) {
 				}
 			})()
 			break
+		case 'worker':
+			(async() => {
+				try {
+					const process = await util.foreverList()
+					if (util.foreverCheckList(process)) {
+						const processList = process.map(item => {
+							return {foreverPid: item.foreverPid, pid: item.pid, uid: item.uid}
+						})
+						const {select_pid} = await util.prompt('process', process.map(item => item.uid))
+						util.foreverStop(processList.filter(item => item.uid === select_pid).pid) // eslint-disable-line camelcase
+						console.log(`${clor.green('Background stopped working bots. [ > twitbot worker ]')}`)
+					} else {
+						console.log(`${clor.red('Background not working bots. [ > twitbot worker ]')}`)
+					}
+				} catch (err) {
+					log(err)
+				}
+			})()
+			break
 		case 'version':
 			console.log(version)
 			break
