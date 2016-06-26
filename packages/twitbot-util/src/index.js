@@ -6,16 +6,13 @@ import logUpdate from 'log-update'
 import nconf from 'nconf'
 import osHomedir from 'os-homedir'
 import inquirer from 'inquirer'
-import forever from 'forever'
 
 import question from './question'
 
 const spinner = Spinners.moon
 const twitbotSettings = nconf
-const twitbotWorkerData = nconf
 
 twitbotSettings.file({file: path.join(osHomedir(), '.twitbotrc')})
-twitbotWorkerData.file({file: path.join(__dirname, '.twitbotworker')})
 
 export function help() {
 	console.log(`
@@ -72,26 +69,6 @@ export function settingsSave(key, val, conf = twitbotSettings) {
 				reject(err)
 			} else {
 				resolve('Transactions completed.')
-			}
-		})
-	})
-}
-
-export function foreverCheckList(list) {
-	return list.filter(item => item.uid.indexOf('twitbot_') > -1).length > 0
-}
-
-export function foreverStop(pid) {
-	forever.stopbypid(pid)
-}
-
-export function foreverList() {
-	return new Promise((resolve, reject) => {
-		forever.list(false, (err, process) => {
-			if (err) {
-				reject(err)
-			} else {
-				resolve(process)
 			}
 		})
 	})
@@ -179,7 +156,5 @@ export function action(twet, args, context, ...middlewares) {
 }
 
 export {twitbotSettings}
-
-export {twitbotWorkerData}
 
 export {question}
