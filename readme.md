@@ -131,8 +131,8 @@ twitbot use src=~/drop/twitter-bumps/index.js --account=johndoe --yolo=true
 ```
 
 ## Twitbot middlewares
-[twitbot-automate]()
-
+[twitbot-automate](https://github.com/c0b41/twitbot-automate)
+[twitbot-moco](https://github.com/c0b41/twitbot-moco)
 [twitbot-nonfollowers]()
 
 ## Twitbot Debug
