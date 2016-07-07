@@ -199,9 +199,9 @@ export default class TwitBot {
 	   */
 		this.extra.notFollowingList = async opt => {
 			try {
-				const followers = await this.followers()
-				const friends = await this.friends()
-				return opt === true ? followers.ids : _.difference(followers.ids, friends.ids)
+				const followers = await this.extra.fullFollowers()
+				const friends = await this.extra.fullFollowings()
+				return opt === true ? followers : followers.filter(f => friends.indexOf(f) === -1)
 			} catch (err) {
 				return err
 			}
