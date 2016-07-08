@@ -1,6 +1,6 @@
 {
   "name": "twitbot-cli",
-  "version": "0.1.0-beta15",
+  "version": "0.1.0-beta16",
   "description": "twitbot-cli package",
   "main": "dist/index.js",
   "scripts": {
@@ -56,7 +56,7 @@
     "debug": "^2.2.0",
     "loud-rejection": "^1.5.0",
     "object.omit": "^2.0.0",
-    "twitbot-core": "0.1.0-beta5",
-    "twitbot-util": "0.1.0-beta6"
+    "twitbot-core": "0.1.0-beta6",
+    "twitbot-util": "0.1.0-beta7"
   }
 }
