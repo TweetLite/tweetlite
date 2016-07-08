@@ -263,7 +263,7 @@ export default function (cmd, extra, version) {
 					try {
 						if (extra.src && extra.account) {
 							const {src, account} = extra
-							const args = omit(extra, ['src', 'account'])
+							const args = omit(extra, ['src'])
 							const confd = util.getUser(account)
 							const T = new TwitBot(confd)
 
