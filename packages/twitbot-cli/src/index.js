@@ -39,7 +39,7 @@ export default function (cmd, extra, version) {
 						const checkBlock = util.notActionBlocks(blocks)
 						const checkName = util.notActionHimself(answers.select_account)
 
-						const check = twetList.filter(twet => checkName(twet) !== false).filter(twet => checkBlock(twet) !== false)
+						const check = twetList.filter(twet => checkName(twet) !== false).filter(twet => checkBlock(twet) !== false).slice(0, answers.takip_sayi)
 
 						userList = check.map(twet => twet.user.id_str)
 						favoriteList = check.map(twet => twet.id_str)
@@ -228,13 +228,15 @@ export default function (cmd, extra, version) {
 						if (lang !== 'none') {
 							actionBlacklist.push(util.okActionLanguage(lang))
 						}
+
 						actionBlacklist.push(util.notActionHimself(username))
 						actionBlacklist.push(util.notActionBlocks(blocks))
+						
 						const stream = T.tweetStream({track: query})
 						const msg = util.spinnerMsg(`Twitbot working.. `)
 						stream.on('tweet', twet => {
 							util.control(twet, actionBlacklist).then(result => {
-								if (result.indexOf(false) === -1) {
+								if (result) {
 									util.action(twet, extra, T, actionList)
 								}
 							}).catch(err => {

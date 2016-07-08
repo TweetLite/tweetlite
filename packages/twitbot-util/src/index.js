@@ -11,6 +11,7 @@ import debug from 'debug'
 import * as question from './question'
 
 const log = debug('twitbot:middleware')
+const actionlog = debug('twitbot:action')
 const spinner = Spinners.moon
 const twitbotSettings = nconf
 
@@ -91,7 +92,7 @@ export function notActionHimself(username) {
 
 export function okActionLanguage(lang) {
 	return function (twet) {
-		return (twet.user.lang === lang)
+		return (twet.user.lang === lang) && (twet.lang === lang)
 	}
 }
 
@@ -114,15 +115,19 @@ export function control(twet, ...blacklist) {
 		if (fun(twet)) {
 			return Promise.resolve(true)
 		}
-		return Promise.reject(new Error('Blocked that twet'))
+		return Promise.reject(new Error(`Blocked that twet`))
 	})
-	return Promise.all(dumps.concat(normalFuncs, promiseFuncs))
+	return Promise.all(dumps.concat(normalFuncs, promiseFuncs)).then(result => {
+		return result.indexOf(false) === -1
+	})
 }
 
 export function actionFavorite() {
 	return async twet => {
 		try {
 			const favoriteResult = await this.favoriteCreate({id: twet.id})
+
+			actionlog(`actionFavorite result => ${JSON.stringify(favoriteResult)}`)
 
 			if (favoriteResult.favorited === false) {
 				return true
@@ -140,6 +145,8 @@ export function actionUserFollow() {
 	return async twet => {
 		try {
 			const followResult = await this.userCreate({user_id: twet.user.id_str})
+
+			actionlog(`actionUserFollow result => ${JSON.stringify(followResult)}`)
 
 			if (followResult.following === true) {
 				return true

@@ -4,4 +4,4 @@ node_js:
   - '4'
 branches:
   only:
-    - feature
+    - master
