@@ -1,6 +1,6 @@
 {
   "name": "twitbot-cli",
-  "version": "0.1.0-beta20",
+  "version": "0.1.0-beta21",
   "description": "twitbot-cli package",
   "main": "dist/index.js",
   "scripts": {

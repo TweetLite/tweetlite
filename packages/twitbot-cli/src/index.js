@@ -13,9 +13,16 @@ export default function (cmd, extra, version) {
 		case 'profile' :
 			(async() => {
 				try {
-					const answers = await util.prompt('config')
-					const result = await util.settingsSave(`users:${answers.username}`, answers)
-					console.log(`  ${clor.green(result)}`)
+					if (extra.import) {
+						const result = await util.settingsSave(`users`, JSON.stringify(require(extra.import).users))
+						console.log(`  ${clor.green(result)}`)
+					} else if (extra.export) {
+						console.log(JSON.stringify(util.twitbotSettings.get()))
+					} else {
+						const answers = await util.prompt('config')
+						const result = await util.settingsSave(`users:${answers.username}`, answers)
+						console.log(`  ${clor.green(result)}`)
+					}
 				} catch (err) {
 					log(err)
 					process.exit(1) // eslint-disable-line xo/no-process-exit

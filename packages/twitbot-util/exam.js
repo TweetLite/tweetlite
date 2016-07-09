@@ -7,25 +7,22 @@ const cleanStack = require('clean-stack');
 //const TT = new twitbot({
 //})
 //const action = [];
-
-//action.push(util.notActionHimself('xxx'))
+//const blacklist = [];
+//
+//blacklist.push(util.notActionHimself('mugeanlifan'))
 //action.push(util.notActionBlocks(['xx', 'xx', 'xx']))
-//action.push(util.okActionLanguage('tr'))
+//blacklist.push(util.okActionLanguage('tr'))
 //
 //
 //
 //
-//util.control(fakeTwet,action).then(result => {
-//  console.log(result);
-//}).catch(err => {
-//  console.log(cleanStack(err.stack));
-//})
+//
 
 //function xxx(){
 //  return function yolo(twet){
 //
 //    return new Promise(function (resolve, reject) {
-//      resolve(true)
+//      reject(new Error('yolo'))
 //    });
 //
 //
@@ -34,6 +31,21 @@ const cleanStack = require('clean-stack');
 //
 //action.push(util.actionFavorite());
 //action.push(util.actionUserFollow());
+//action.push(xxx())
 //
 //
-//util.action(fakeTwet, {}, TT, action)
+
+//const stream = TT.tweetStream({track: ['#nw']})
+//
+//stream.on('tweet', twet => {
+//	util.control(twet, blacklist).then(result => {
+//		if (result) {
+//		util.action(fakeTwet, {}, TT, action)
+//		} else {
+//			console.log(result);
+//		}
+//	}).catch(err => {
+//		// Houston we have a problem
+//		console.log(cleanStack(err.stack));
+//	})
+//})

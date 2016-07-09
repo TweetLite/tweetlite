@@ -15,7 +15,7 @@ const actionlog = debug('twitbot:action')
 const spinner = Spinners.moon
 const twitbotSettings = nconf
 
-twitbotSettings.file({file: path.join(__dirname, '..', '.twitbotrc')})
+twitbotSettings.file({file: path.join(__dirname, '..', '.twitbotrc'), secure: {secret: 'super-secretzzz-keyzz', alg: 'aes-256-ctr'}})
 
 export function help() {
 	return `
@@ -126,7 +126,10 @@ export function actionFavorite() {
 	return async function (twet) {
 		try {
 			const favoriteResult = await this.favoriteCreate({id: twet.id_str})
-			actionlog(`actionFavorite result => ${JSON.stringify(favoriteResult)}`)
+			actionlog(`actionFavorite Done`)
+			if (_.has(favoriteResult, 'errors')) {
+				return new Error(favoriteResult.errors[0].message)
+			}
 			if (favoriteResult.favorited === false) {
 				return true
 			}
@@ -141,12 +144,15 @@ export function actionUserFollow() {
 	return async function (twet) {
 		try {
 			const followResult = await this.userCreate({user_id: twet.user.id_str})
-			actionlog(`actionUserFollow result => ${JSON.stringify(followResult)}`)
+			actionlog(`actionUserFollow Done`)
+
+			if (_.has(followResult, 'errors')) {
+				return new Error(followResult.errors[0].message)
+			}
 
 			if (followResult.following === true) {
 				return true
 			}
-
 			return false
 		} catch (err) {
 			return err
@@ -155,18 +161,20 @@ export function actionUserFollow() {
 }
 
 export function action(twet, args, context, ...middlewares) {
-	_.flattenDeep(middlewares).forEach(async middleware => {
-		try {
-			const result = await middleware.call(context, twet, args)()
-			if (result) {
-				actionlog(`Action Ok => ${JSON.stringify(result)}`)
-			} else {
-				// Houston we have a problem
-				log(`Seems like a problem ${result}`)
+	_.flattenDeep(middlewares).forEach(middleware => {
+		(async() => {
+			try {
+				const result = await middleware.call(context, twet, args)
+				if (result) {
+					actionlog(`Action Ok => ${JSON.stringify(result)}`)
+				} else {
+					// Houston we have a problem
+					log(`Seems like a problem ${result}`)
+				}
+			} catch (err) {
+				log(err)
 			}
-		} catch (err) {
-			log(err)
-		}
+		})()
 	})
 }
 
