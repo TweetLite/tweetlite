@@ -15,7 +15,7 @@ const actionlog = debug('twitbot:action')
 const spinner = Spinners.moon
 const twitbotSettings = nconf
 
-twitbotSettings.file({file: path.join(__dirname, '..', '.twitbotrc'), secure: {secret: 'super-secretzzz-keyzz', alg: 'aes-256-ctr'}})
+twitbotSettings.file({file: path.join(__dirname, '..', '.twitbotrc')})
 
 export function help() {
 	return `

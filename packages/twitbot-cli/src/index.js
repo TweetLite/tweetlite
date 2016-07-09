@@ -14,7 +14,7 @@ export default function (cmd, extra, version) {
 			(async() => {
 				try {
 					if (extra.import) {
-						const result = await util.settingsSave(`users`, JSON.stringify(require(extra.import).users))
+						const result = await util.settingsSave(`users`, require(extra.import).users)
 						console.log(`  ${clor.green(result)}`)
 					} else if (extra.export) {
 						console.log(JSON.stringify(util.twitbotSettings.get()))
