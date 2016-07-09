@@ -162,10 +162,13 @@ export function actionUserFollow() {
 }
 
 export function action(twet, args, context, ...middlewares) {
+	actionlog(`Action ${JSON.stringify(middlewares)}`)
 	_.flattenDeep(middlewares).forEach(middleware => {
 		const caller = middleware.call(context, twet, args)
 		caller.then(result => {
-			if (!result) {
+			if (result) {
+				actionlog(`Action ok => ${JSON.stringify(result)}`)
+			} else {
 				// Houston we have a problem
 			}
 		}).catch(err => {

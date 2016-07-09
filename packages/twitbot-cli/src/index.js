@@ -231,7 +231,7 @@ export default function (cmd, extra, version) {
 
 						actionBlacklist.push(util.notActionHimself(username))
 						actionBlacklist.push(util.notActionBlocks(blocks))
-						
+
 						const stream = T.tweetStream({track: query})
 						const msg = util.spinnerMsg(`Twitbot working.. `)
 						stream.on('tweet', twet => {
