@@ -213,11 +213,11 @@ export default function (cmd, extra, version) {
 							}
 						}
 
-						if (takip !== null && takip === 'Yes') {
+						if (takip === 'Yes') {
 							actionList.push(util.actionUserFollow())
 						}
 
-						if (favorite !== null && favorite === 'Yes') {
+						if (favorite === 'Yes') {
 							actionList.push(util.actionFavorite())
 						}
 

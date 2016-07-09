@@ -123,29 +123,21 @@ export function control(twet, ...blacklist) {
 }
 
 export function actionFavorite() {
-	return async twet => {
-		try {
-			const favoriteResult = await this.favoriteCreate({id: twet.id})
-
-			actionlog(`actionFavorite result => ${JSON.stringify(favoriteResult)}`)
-
+	return twet => {
+		return this.favoriteCreate({id: twet.id}).then(favoriteResult => {
 			if (favoriteResult.favorited === false) {
 				return true
 			}
 			if (_.has(favoriteResult, 'errors')) {
 				return new Error(favoriteResult.errors[0].message)
 			}
-		} catch (err) {
-			return err
-		}
+		})
 	}
 }
 
 export function actionUserFollow() {
-	return async twet => {
-		try {
-			const followResult = await this.userCreate({user_id: twet.user.id_str})
-
+	return twet => {
+		return this.userCreate({user_id: twet.user.id_str}).then(followResult => {
 			actionlog(`actionUserFollow result => ${JSON.stringify(followResult)}`)
 
 			if (followResult.following === true) {
@@ -155,19 +147,16 @@ export function actionUserFollow() {
 			if (_.has(followResult, 'errors')) {
 				return new Error(followResult.errors[0].message)
 			}
-		} catch (err) {
-			return err
-		}
+		})
 	}
 }
 
 export function action(twet, args, context, ...middlewares) {
-	actionlog(`Action ${JSON.stringify(middlewares)}`)
 	_.flattenDeep(middlewares).forEach(middleware => {
 		const caller = middleware.call(context, twet, args)
 		caller.then(result => {
 			if (result) {
-				actionlog(`Action ok => ${JSON.stringify(result)}`)
+				actionlog(`Action Ok => ${JSON.stringify(result)}`)
 			} else {
 				// Houston we have a problem
 			}
