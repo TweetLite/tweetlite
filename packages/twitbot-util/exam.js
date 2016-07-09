@@ -1,8 +1,12 @@
 var util = require('./dist/index');
+var twitbot = require('../twitbot-core/dist');
 var fakeTwet =  require('./test/fake.json');
 const cleanStack = require('clean-stack');
 
-const action = [];
+
+//const TT = new twitbot({
+//})
+//const action = [];
 
 //action.push(util.notActionHimself('xxx'))
 //action.push(util.notActionBlocks(['xx', 'xx', 'xx']))
@@ -17,16 +21,19 @@ const action = [];
 //  console.log(cleanStack(err.stack));
 //})
 
-function xxx(){
-  return function yolo(twet){
-    return new Promise(function (resolve, reject) {
-      resolve(twet);
-    })
-
-  }
-}
-
-action.push(util.actionFavorite());
-action.push(util.actionFavorite());
-
-util.action(fakeTwet, {}, {}, action)
+//function xxx(){
+//  return function yolo(twet){
+//
+//    return new Promise(function (resolve, reject) {
+//      resolve(true)
+//    });
+//
+//
+//  }
+//}
+//
+//action.push(util.actionFavorite());
+//action.push(util.actionUserFollow());
+//
+//
+//util.action(fakeTwet, {}, TT, action)
