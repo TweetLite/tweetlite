@@ -198,11 +198,6 @@ const messagelist = [
 	},
 	{
 		type: 'input',
-		name: 'limit',
-		message: 'Enter the user limit:'
-	},
-	{
-		type: 'input',
 		name: 'message',
 		message: 'Message to Write :'
 	},
