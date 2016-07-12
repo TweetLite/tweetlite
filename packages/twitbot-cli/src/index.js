@@ -130,9 +130,9 @@ export default function (cmd, extra, version) {
 						const msg = util.spinnerMsg(`Twitbot working.. `)
 						if (answers.send === 'Yes' && answers.message) {
 							const followersList = await T.extra.fullFollowers()
-							const list = followersList.ids
+							const list = followersList
 							if (extra.blacklist) {
-								const blocksids = answers.blacklist.split(',')
+								const blocksids = extra.blacklist.split(',')
 								list.filter(id => blocksids.indexOf(id) === -1)
 							}
 							const msgCount = await T.extra.fullUserMessage(list, answers.message).length

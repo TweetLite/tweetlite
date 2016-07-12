@@ -133,7 +133,7 @@ export default class TwitBot {
 				const ids = await followers(opt, 'followers')
 				return _.flattenDeep(ids)
 			} catch (err) {
-				return err
+				throw err
 			}
 		}
 		/**
@@ -148,7 +148,7 @@ export default class TwitBot {
 				const ids = await friends(opt, 'friends')
 				return _.flattenDeep(ids)
 			} catch (err) {
-				return err
+				throw err
 			}
 		}
 		/**
@@ -163,7 +163,7 @@ export default class TwitBot {
 				const ids = await blocks(opt, 'blocks')
 				return _.flattenDeep(ids)
 			} catch (err) {
-				return err
+				throw err
 			}
 		}
 		/**
@@ -178,7 +178,7 @@ export default class TwitBot {
 				const favorites = await favorite(Object.assign({count: 200, include_entities: false}, opt), 'favorites')
 				return favorites
 			} catch (err) {
-				return err
+				throw err
 			}
 		}
 		/**
@@ -203,7 +203,7 @@ export default class TwitBot {
 				const friends = await this.extra.fullFollowings()
 				return opt === true ? followers : followers.filter(f => friends.indexOf(f) === -1)
 			} catch (err) {
-				return err
+				throw err
 			}
 		}
 

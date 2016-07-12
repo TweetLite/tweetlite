@@ -14,7 +14,7 @@ const log = debug('twitbot:core:util')
 export function inject(methods) {
 	const fmethods = _.keys(methods)
 	fmethods.forEach(name => {
-		this[name] = _.throttle(params => {
+		this[name] = params => {
 			if (methods[name].method === 'stream') {
 				log(`Stream ${name} working, params ${JSON.stringify(params)}`)
 				return this.T.stream(methods[name].path, params || {})
@@ -25,11 +25,15 @@ export function inject(methods) {
 					if (err && err.statusCode !== 403) {
 						reject(err)
 					} else {
-						resolve(data)
+						if(_.has(data, 'errors')){
+							reject(new Error(data.errors[0].message))
+						} else {
+							resolve(data)
+						}
 					}
 				})
 			})
-		}, 60000)
+		}
 	})
 }
 /**
@@ -47,19 +51,31 @@ export function nextCursor(opt, method) {
 		throw new Error('Method not found')
 	}
 
-	const loadAll = ((obj, cb) => {
+	const loadAll = ((obj, next) => {
 		return this[method](obj).then(data => {
 			dump.push(data.ids)
 			log(`Working nextCursor ${JSON.stringify(obj)}`)
 			if (data.next_cursor === -1 || data.next_cursor === 0) {
-				return cb(dump)
+				return next(null,dump)
 			}
 			query.cursor = data.next_cursor
-			loadAll(query, cb)
+			loadAll(query, next)
+		}).catch(err => {
+			next(err, null)
 		})
 	})
 
-	return new Promise(resolve => loadAll(query, datas => resolve(datas)))
+	return new Promise((resolve,reject) => {
+		loadAll(query, (err, datas) => {
+			
+			if(err !== null){
+				reject(err)
+			} else {
+				resolve(datas)
+			}
+
+		})
+	})
 }
 /**
  *  TwitBotCore maxId funcion.
@@ -72,19 +88,31 @@ export function maxId(opt, method) {
 	const query = opt
 	let dump = []
 
-	const loadAll = ((obj, cb) => {
+	const loadAll = ((obj, next) => {
 		return this[method](obj).then(data => {
 			dump = dump.concat(data)
 			log(`Working maxId ${JSON.stringify(obj)}`)
 			if (data.length === 0) {
-				return cb(dump)
+				return next(null, dump)
 			}
 			query.max_id = data[data.length - 1].id
-			loadAll(query, cb)
+			loadAll(query, next)
+		}).catch(err => {
+			next(err, null)
 		})
 	})
 
-	return new Promise(resolve => loadAll(query, datas => resolve(datas)))
+	return new Promise((resolve,reject) => {
+		loadAll(query, (err, datas) => {
+			
+			if(err !== null){
+				reject(err)
+			} else {
+				resolve(datas)
+			}
+
+		})
+	})
 }
 
 /**
@@ -97,30 +125,38 @@ export function fullSearch(obj) {
 	const query = _.pick(Object.assign({result_type: 'recent', count: 100}, obj), ['q', 'lang', 'count', 'result_type', 'count'])
 	let limit = 1
 	if (obj.takip_sayi >= 200) {
-		limit = 4
+		limit = 3
 	} else if (obj.takip_sayi > 400 && obj.takip_sayi <= 700) {
-		limit = 10
+		limit = 6
 	} else if (obj.takip_sayi < 200) {
-		limit = 2
+		limit = 1
 	}
 
 	let count = 1
 	const dump = []
 
-	const loadTwit = ((obj, cb) => {
+	const loadTwit = ((obj, next) => {
 		return this.search(obj).then(data => {
 			log(`Working FullSearch ${JSON.stringify(obj)}}`)
 			dump.push(data.statuses)
 			if ((count !== limit && count <= limit) && data.search_metadata.next_results !== undefined) {
 				query.max_id = query.max_id = (/max_id=([^&]*)/g).exec(data.search_metadata.next_results)[1]
-				loadTwit(query, cb)
+				loadTwit(query, next)
 				count++
 			} else {
-				return cb(dump)
+				return next(null,dump)
 			}
 		}).catch(err => {
-			console.log(err)
+			next(err, null)
 		})
 	})
-	return new Promise(resolve => loadTwit(query, dump => resolve(_.flattenDeep(dump))))
+	return new Promise((resolve,reject) => {
+		loadTwit(query, (err, dump) =>{
+			if(err !== null){
+				reject(err)
+			} else {
+				resolve(_.flattenDeep(dump))
+			}
+		})
+	})
 }
