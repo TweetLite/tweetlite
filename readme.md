@@ -136,7 +136,12 @@ twitbot use src=~/drop/twitter-bumps/index.js --account=johndoe --yolo=true
 [twitbot-nonfollowers]()
 
 ## Twitbot Debug
+- twitbot:middleware
+- twitbot:action
+- twitbot:core
+- twitbot:core:util
+- twitbot:cli
 
 ```sh
-env DEBUG="twitbot:cli,twitbot:core,twitbot:util,twitbot:core:util" twitbot search
+env DEBUG="twitbot:cli" twitbot search
 ```

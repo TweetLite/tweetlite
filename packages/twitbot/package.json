@@ -1,6 +1,6 @@
 {
   "name": "twitbot",
-  "version": "0.3.0-beta25",
+  "version": "0.3.0-beta26",
   "description": "Twitter bots for cli..",
   "main": "./dist/index.js",
   "scripts": {
@@ -36,8 +36,8 @@
   "dependencies": {
     "minimist": "^1.2.0",
     "object.omit": "^2.0.0",
-    "twitbot-cli": "0.1.0-beta24",
-    "twitbot-core": "0.1.0-beta6"
+    "twitbot-cli": "0.1.0-beta25",
+    "twitbot-core": "0.1.0-beta7"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",

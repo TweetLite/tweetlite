@@ -33,6 +33,7 @@ export default function (cmd, extra, version) {
 			(async() => {
 				if (util.checkUser()) {
 					try {
+						let check = null
 						const answers = await util.prompt('search')
 						const confd = util.getUser(answers.select_account)
 						const T = new TwitBot(confd)
@@ -46,7 +47,15 @@ export default function (cmd, extra, version) {
 						const checkBlock = util.notActionBlocks(blocks)
 						const checkName = util.notActionHimself(answers.select_account)
 
-						const check = twetList.filter(twet => checkName(twet) !== false).filter(twet => checkBlock(twet) !== false).slice(0, answers.takip_sayi)
+						check = twetList.filter(twet => checkName(twet) !== false).filter(twet => checkBlock(twet) !== false).slice(0, answers.takip_sayi)
+
+						if (extra.src) {
+							const extraMiddleware = require(extra.src)
+							if (extraMiddleware.blacklist) {
+								const extraBlacklist = extraMiddleware.blacklist(extra)
+								check = check.filter(twet => extraBlacklist(twet) !== false)
+							}
+						}
 
 						userList = check.map(twet => twet.user.id_str)
 						favoriteList = check.map(twet => twet.id_str)

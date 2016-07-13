@@ -16,20 +16,18 @@ export function inject(methods) {
 	fmethods.forEach(name => {
 		this[name] = params => {
 			if (methods[name].method === 'stream') {
-				log(`Stream ${name} working, params ${JSON.stringify(params)}`)
+				log(`Stream ${name} working, params ${JSON.stringify(params || {})}`)
 				return this.T.stream(methods[name].path, params || {})
 			}
 			return new Promise((resolve, reject) => {
-				log(`Twitbot ${name} working, params ${JSON.stringify(params)}`)
+				log(`Twitbot ${name} working, params ${JSON.stringify(params || {})}`)
 				this.T[methods[name].method](methods[name].path, params || {}, (err, data) => {
 					if (err && err.statusCode !== 403) {
 						reject(err)
+					} else 	if (_.has(data, 'errors')) {
+						reject(new Error(data.errors[0].message))
 					} else {
-						if(_.has(data, 'errors')){
-							reject(new Error(data.errors[0].message))
-						} else {
-							resolve(data)
-						}
+						resolve(data)
 					}
 				})
 			})
@@ -56,7 +54,7 @@ export function nextCursor(opt, method) {
 			dump.push(data.ids)
 			log(`Working nextCursor ${JSON.stringify(obj)}`)
 			if (data.next_cursor === -1 || data.next_cursor === 0) {
-				return next(null,dump)
+				return next(null, dump)
 			}
 			query.cursor = data.next_cursor
 			loadAll(query, next)
@@ -65,15 +63,13 @@ export function nextCursor(opt, method) {
 		})
 	})
 
-	return new Promise((resolve,reject) => {
+	return new Promise((resolve, reject) => {
 		loadAll(query, (err, datas) => {
-			
-			if(err !== null){
-				reject(err)
-			} else {
+			if (err === null) {
 				resolve(datas)
+			} else {
+				reject(err)
 			}
-
 		})
 	})
 }
@@ -102,15 +98,13 @@ export function maxId(opt, method) {
 		})
 	})
 
-	return new Promise((resolve,reject) => {
+	return new Promise((resolve, reject) => {
 		loadAll(query, (err, datas) => {
-			
-			if(err !== null){
-				reject(err)
-			} else {
+			if (err === null) {
 				resolve(datas)
+			} else {
+				reject(err)
 			}
-
 		})
 	})
 }
@@ -144,18 +138,18 @@ export function fullSearch(obj) {
 				loadTwit(query, next)
 				count++
 			} else {
-				return next(null,dump)
+				return next(null, dump)
 			}
 		}).catch(err => {
 			next(err, null)
 		})
 	})
-	return new Promise((resolve,reject) => {
-		loadTwit(query, (err, dump) =>{
-			if(err !== null){
-				reject(err)
-			} else {
+	return new Promise((resolve, reject) => {
+		loadTwit(query, (err, dump) => {
+			if (err === null) {
 				resolve(_.flattenDeep(dump))
+			} else {
+				reject(err)
 			}
 		})
 	})

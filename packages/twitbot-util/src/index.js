@@ -37,10 +37,11 @@ export function prompt(name, choices) {
 	const ques = question[name] // eslint-disable-line import/namespace
 
 	if (['search', 'watch', 'accountlist', 'unfollowlist', 'messagelist'].indexOf(name) !== -1) {
+		ques[0].choices = _.keys(twitbotSettings.get('users'))
 		if (choices) {
-			ques[0].choices = choices
-		} else {
-			ques[0].choices = _.keys(twitbotSettings.get('users'))
+			choices.forEach(item => {
+				ques[item.index][item.key] = item.values
+			})
 		}
 	}
 
@@ -84,6 +85,11 @@ export function spinnerMsg(msg, opt) {
 	}, spinner.interval)
 }
 
+export function notActionUrl() {
+	return function (twet) {
+		return twet.text.match(new RegExp('(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w-.,@?^=%&:/~+#-]*[\\w@?^=%&;/~+#-])?')) === null
+	}
+}
 export function notActionHimself(username) {
 	return function (twet) {
 		return (twet.user.screen_name.toLowerCase() !== username.toLowerCase())
@@ -128,14 +134,13 @@ export function actionFavorite() {
 			const favoriteResult = await this.favoriteCreate({id: twet.id_str})
 			actionlog(`actionFavorite Done`)
 			if (_.has(favoriteResult, 'errors')) {
-				return new Error(favoriteResult.errors[0].message)
+				throw new Error(favoriteResult.errors[0].message)
 			}
-			if (favoriteResult.favorited === false) {
+			if (favoriteResult) {
 				return true
 			}
-			return false
 		} catch (err) {
-			return err
+			throw err
 		}
 	}
 }
@@ -147,15 +152,12 @@ export function actionUserFollow() {
 			actionlog(`actionUserFollow Done`)
 
 			if (_.has(followResult, 'errors')) {
-				return new Error(followResult.errors[0].message)
+				throw new Error(followResult.errors[0].message)
 			}
 
-			if (followResult.following === true) {
-				return true
-			}
-			return false
+			return followResult.following
 		} catch (err) {
-			return err
+			throw err
 		}
 	}
 }
@@ -163,8 +165,6 @@ export function actionUserFollow() {
 export function action(twet, args, context, ...middlewares) {
 	_.flattenDeep(middlewares).forEach(middleware => {
 		(async() => {
-			console.log(typeof middleware)
-			console.log(middleware)
 			try {
 				const result = await middleware.call(context, twet, args)
 				if (result) {

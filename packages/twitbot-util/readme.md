@@ -16,6 +16,7 @@ import {
 	notActionHimself,
 	okActionLanguage,
 	notActionBlocks,
+	notActionUrl
 } from 'twitbot-util'; // some blacklist functions
 
 import {
