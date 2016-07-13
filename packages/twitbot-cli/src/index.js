@@ -34,12 +34,17 @@ export default function (cmd, extra, version) {
 				if (util.checkUser()) {
 					try {
 						let check = null
+						let lang = null
 						const answers = await util.prompt('search')
 						const confd = util.getUser(answers.select_account)
 						const T = new TwitBot(confd)
 						const msg = util.spinnerMsg(`Twitbot working.. `)
 
-						const twetList = await T.extra.fullSearch({q: answers.keyword, takip_sayi: answers.takip_sayi, lang: answers.lang})
+						if (answers.lang !== 'none') {
+							lang = answers.lang
+						}
+
+						const twetList = await T.extra.fullSearch({q: answers.keyword, takip_sayi: answers.takip_sayi, lang})
 						let favoriteList = null
 						let userList = null
 						const blocks = await T.extra.fullBlocks()
@@ -47,7 +52,7 @@ export default function (cmd, extra, version) {
 						const checkBlock = util.notActionBlocks(blocks)
 						const checkName = util.notActionHimself(answers.select_account)
 
-						check = twetList.filter(twet => checkName(twet) !== false).filter(twet => checkBlock(twet) !== false).slice(0, answers.takip_sayi)
+						check = twetList.filter(twet => checkName(twet) !== false).filter(twet => checkBlock(twet) !== false)
 
 						if (extra.src) {
 							const extraMiddleware = require(extra.src)
@@ -56,6 +61,13 @@ export default function (cmd, extra, version) {
 								check = check.filter(twet => extraBlacklist(twet) !== false)
 							}
 						}
+
+						if (lang !== null) {
+							const checkLang = util.okActionLanguage(lang)
+							check = check.filter(twet => checkLang(twet) === true)
+						}
+
+						check = check.slice(0, answers.takip_sayi)
 
 						userList = check.map(twet => twet.user.id_str)
 						favoriteList = check.map(twet => twet.id_str)
