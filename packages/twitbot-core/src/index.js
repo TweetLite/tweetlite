@@ -82,7 +82,7 @@ export default class TwitBot {
 	   * @api public
 	   */
 		this.extra.fullFavoriteList = list => {
-			return promiseSeries(id => this.favoriteCreate({id}), list)
+			return promiseSeries((id, val) => util.throttle(this.favoriteCreate({id}), val), list)
 		}
 		/**
 	   * fullDestoryFavorite promies call
@@ -91,7 +91,7 @@ export default class TwitBot {
 	   * @api public
 	   */
 		this.extra.fullDestoryFavorite = list => {
-			return promiseSeries(id => this.favoriteDestroy({id}), list)
+			return promiseSeries((id, val) => util.throttle(this.favoriteDestroy({id}), val), list)
 		}
 		/**
 	   * fullUserFollow promies call
@@ -100,7 +100,7 @@ export default class TwitBot {
 	   * @api public
 	   */
 		this.extra.fullUserFollow = list => {
-			return promiseSeries(user_id => this.userCreate({user_id}), list) // eslint-disable-line camelcase
+			return promiseSeries((user_id, val) => util.throttle(this.userCreate({user_id}), val), list) // eslint-disable-line camelcase
 		}
 		/**
 	   * fullUserDestroy promies call
@@ -108,8 +108,8 @@ export default class TwitBot {
 		 * @return {Promise} self
 	   * @api public
 	   */
-		this.extra.fullUserDestroy = lists => {
-			return promiseSeries(user_id => this.userDestroy({user_id}), lists) // eslint-disable-line camelcase
+		this.extra.fullUserDestroy = list => {
+			return promiseSeries((user_id, val) => util.throttle(this.userDestroy({user_id}), val), list) // eslint-disable-line camelcase
 		}
 		/**
 	   * fullUserMessage promies call
@@ -119,7 +119,7 @@ export default class TwitBot {
 	   * @api public
 	   */
 		this.extra.fullUserMessage = (list, msg) => {
-			return promiseSeries(user_id => this.messageCreate({user_id, text: msg}), list)// eslint-disable-line camelcase
+			return promiseSeries((user_id, val) => util.throttle(this.messageCreate({user_id, text: msg}), val), list) // eslint-disable-line camelcase
 		}
 		/**
 	   * fullFollowers promies call
@@ -197,11 +197,11 @@ export default class TwitBot {
 		 * @return {Promise} self
 	   * @api public
 	   */
-		this.extra.notFollowingList = async opt => {
+		this.extra.notFollowingList = async () => {
 			try {
 				const followers = await this.extra.fullFollowers()
 				const friends = await this.extra.fullFollowings()
-				return opt === true ? followers : followers.filter(f => friends.indexOf(f) === -1)
+				return followers.filter(f => friends.indexOf(f) === -1)
 			} catch (err) {
 				throw err
 			}

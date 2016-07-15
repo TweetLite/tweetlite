@@ -22,13 +22,15 @@ export function inject(methods) {
 			return new Promise((resolve, reject) => {
 				log(`Twitbot ${name} working, params ${JSON.stringify(params || {})}`)
 				this.T[methods[name].method](methods[name].path, params || {}, (err, data) => {
-					if (err && err.statusCode !== 403) {
-						reject(err)
-					} else 	if (_.has(data, 'errors')) {
-						reject(new Error(data.errors[0].message))
-					} else {
-						resolve(data)
-					}
+					setTimeout(() => {
+						if (err && err.statusCode !== 403) {
+							reject(err)
+						} else 	if (_.has(data, 'errors')) {
+							reject(new Error(data.errors[0].message))
+						} else {
+							resolve(data)
+						}
+					}, 15000)
 				})
 			})
 		}
@@ -152,5 +154,21 @@ export function fullSearch(obj) {
 				reject(err)
 			}
 		})
+	})
+}
+
+export function throttle(method, val) {
+	return new Promise((resolve, reject) => {
+		if (val !== 0 && (val % 15) === 0) {
+			setTimeout(() => {
+				method.then(res => {
+					resolve(res)
+				}).catch(err => reject(err))
+			}, 900000)
+		} else {
+			method.then(res => {
+				resolve(res)
+			}).catch(err => reject(err))
+		}
 	})
 }
