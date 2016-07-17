@@ -5,6 +5,7 @@ import _ from 'lodash'
 import debug from 'debug'
 
 const log = debug('twitbot:core:util')
+const error_codes = [32, 34, 64, 68, 88, 89, 92, 130, 131, 135, 136, 161, 179, 185, 187, 215, 226, 231, 251, 261, 271, 272, 354] // eslint-disable-line camelcase
 
 /**
  *  TwitBotCore inject method utility.
@@ -26,7 +27,11 @@ export function inject(methods) {
 						if (err && err.statusCode !== 403) {
 							reject(err)
 						} else 	if (_.has(data, 'errors')) {
-							reject(new Error(data.errors[0].message))
+							if (error_codes.indexOf(data.errors[0].code) === -1) {
+								resolve(data)
+							} else {
+								reject(new Error(data.errors[0].message))
+							}
 						} else {
 							resolve(data)
 						}

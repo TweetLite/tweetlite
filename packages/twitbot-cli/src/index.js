@@ -74,12 +74,14 @@ export default function (cmd, extra, version) {
 
 						if (answers.takip === 'Yes') {
 							userList = await T.extra.fullUserFollow(userList)
+							userList = userList.filter(twet => !twet.errors)
 						}
 
 						if (answers.favorite === 'Yes') {
 							favoriteList	= await T.extra.fullFavoriteList(favoriteList)
+							favoriteList = favoriteList.filter(twet => !twet.errors)
 						}
-
+						
 						clearInterval(msg)
 						console.log(`  ${clor.green('Transactions completed.')}`)
 						if (answers.takip === 'Yes') {
