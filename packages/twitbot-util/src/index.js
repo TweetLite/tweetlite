@@ -86,24 +86,24 @@ export function spinnerMsg(msg, opt) {
 }
 
 export function notActionUrl() {
-	return function (twet) {
+	return function notActionUrlFN(twet) {
 		return twet.text.match(new RegExp('(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w-.,@?^=%&:/~+#-]*[\\w@?^=%&;/~+#-])?')) === null
 	}
 }
 export function notActionHimself(username) {
-	return function (twet) {
+	return function notActionHimselfFN(twet) {
 		return (twet.user.screen_name.toLowerCase() !== username.toLowerCase())
 	}
 }
 
 export function okActionLanguage(lang) {
-	return function (twet) {
+	return function okActionLanguageFN(twet) {
 		return (twet.user.lang === lang) && (twet.lang === lang)
 	}
 }
 
 export function notActionBlocks(blocks) {
-	return function (twet) {
+	return function notActionBlocksFN(twet) {
 		if (blocks.indexOf(twet.user.id_str) === -1) {
 			return true
 		}
@@ -121,7 +121,7 @@ export function control(twet, ...blacklist) {
 		if (fun(twet)) {
 			return Promise.resolve(true)
 		}
-		return Promise.reject(new Error(`Blocked that twet`))
+		return Promise.reject(new Error(` ${fun.name} function blocked that => ${twet.text}`))
 	})
 	return Promise.all(dumps.concat(normalFuncs, promiseFuncs)).then(result => {
 		return result.indexOf(false) === -1

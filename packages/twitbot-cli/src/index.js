@@ -81,7 +81,7 @@ export default function (cmd, extra, version) {
 							favoriteList	= await T.extra.fullFavoriteList(favoriteList)
 							favoriteList = favoriteList.filter(twet => !twet.errors)
 						}
-						
+
 						clearInterval(msg)
 						console.log(`  ${clor.green('Transactions completed.')}`)
 						if (answers.takip === 'Yes') {
@@ -272,7 +272,7 @@ export default function (cmd, extra, version) {
 								}
 							}).catch(err => {
 								// Houston we have a problem
-								log(err)
+								log(err.message)
 							})
 						})
 
