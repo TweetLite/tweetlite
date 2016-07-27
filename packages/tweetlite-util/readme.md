@@ -1,14 +1,14 @@
 ## Install
 
 ```
-npm install --save twitbot-util@0.1.0
+npm install --save tweetlite-util@0.1.0
 ```
 
 ## Usage
 
 ```js
 
-import util from 'twitbot-util';
+import util from 'tweetlite-util';
 
 //or
 
@@ -17,7 +17,7 @@ import {
 	okActionLanguage,
 	notActionBlocks,
 	notActionUrl
-} from 'twitbot-util'; // some blacklist functions
+} from 'tweetlite-util'; // some blacklist functions
 
 import {
 	actionFavorite,
@@ -29,7 +29,7 @@ import {
 	question,
 	prompt,
 	spinnerMsg
-} from 'twitbot-util'; // some utility functions
+} from 'tweetlite-util'; // some utility functions
 
 
 ```

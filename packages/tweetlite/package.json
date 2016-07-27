@@ -1,5 +1,5 @@
 {
-  "name": "twitbot",
+  "name": "tweetlite",
   "version": "0.3.0-beta29",
   "description": "Twitter bots for cli..",
   "main": "./dist/index.js",
@@ -10,7 +10,7 @@
     "test": "xo ./src "
   },
   "bin": {
-    "twitbot": "./bin/twitbot"
+    "tweetlite": "./bin/tweetlite"
   },
   "xo": {
     "esnext": true,
@@ -19,7 +19,7 @@
   "preferGlobal": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/c0b41/twitbot.git"
+    "url": "git+https://github.com/TweetLite/tweetlite.git"
   },
   "keywords": [
     "twitter",
@@ -30,14 +30,14 @@
   "author": "Ayhan <cobaimelan@protonmail.ch> (http://www.github.com/c0b41)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/c0b41/twitbot/issues"
+    "url": "https://github.com/TweetLite/tweetlite/issues"
   },
-  "homepage": "https://github.com/c0b41/twitbot#readme",
+  "homepage": "https://github.com/TweetLite/tweetlite#readme",
   "dependencies": {
     "minimist": "^1.2.0",
     "object.omit": "^2.0.0",
-    "twitbot-cli": "0.1.0-beta28",
-    "twitbot-core": "0.1.0-beta8"
+    "tweetlite-cli": "0.1.0-beta28",
+    "tweetlite-core": "0.1.0-beta8"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",

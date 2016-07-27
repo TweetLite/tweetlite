@@ -1,11 +1,11 @@
 import clor from 'clor'
 import loudRejection from 'loud-rejection'
-import TwitBot from 'twitbot-core'
-import * as util from 'twitbot-util'
+import TweetLite from 'tweetlite-core'
+import * as util from 'tweetlite-util'
 import omit from 'object.omit'
 import debug from 'debug'
 
-const log = debug('twitbot:cli')
+const log = debug('tweetlite:cli')
 loudRejection()
 
 export default function (cmd, extra, version) {
@@ -17,7 +17,7 @@ export default function (cmd, extra, version) {
 						const result = await util.settingsSave(`users`, require(extra.import).users)
 						console.log(`  ${clor.green(result)}`)
 					} else if (extra.export) {
-						console.log(JSON.stringify(util.twitbotSettings.get()))
+						console.log(JSON.stringify(util.TweetLiteSettings.get()))
 					} else {
 						const answers = await util.prompt('config')
 						const result = await util.settingsSave(`users:${answers.username}`, answers)
@@ -37,8 +37,8 @@ export default function (cmd, extra, version) {
 						let lang = null
 						const answers = await util.prompt('search')
 						const confd = util.getUser(answers.select_account)
-						const T = new TwitBot(confd)
-						const msg = util.spinnerMsg(`Twitbot working.. `)
+						const T = new TweetLite(confd)
+						const msg = util.spinnerMsg(`TweetLite working.. `)
 
 						if (answers.lang !== 'none') {
 							lang = answers.lang
@@ -95,7 +95,7 @@ export default function (cmd, extra, version) {
 						process.exit(1) // eslint-disable-line xo/no-process-exit
 					}
 				} else {
-					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
+					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
 				}
 			})()
 			break
@@ -105,8 +105,8 @@ export default function (cmd, extra, version) {
 					try {
 						const {select_account} = await util.prompt('accountlist')
 						const confd = util.getUser(select_account)
-						const T = new TwitBot(confd)
-						const msg = util.spinnerMsg(`Twitbot working.. `)
+						const T = new TweetLite(confd)
+						const msg = util.spinnerMsg(`TweetLite working.. `)
 						const favoriteList = await T.extra.fullFavorites()
 						await T.extra.fullDestoryFavorite(favoriteList.map(item => item.id_str))
 						clearInterval(msg)
@@ -116,7 +116,7 @@ export default function (cmd, extra, version) {
 						process.exit(1) // eslint-disable-line xo/no-process-exit
 					}
 				} else {
-					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
+					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
 				}
 			})()
 			break
@@ -139,7 +139,7 @@ export default function (cmd, extra, version) {
 						process.exit(1) // eslint-disable-line xo/no-process-exit
 					}
 				} else {
-					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
+					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
 				}
 			})()
 			break
@@ -149,8 +149,8 @@ export default function (cmd, extra, version) {
 					try {
 						const answers = await util.prompt('messagelist')
 						const confd = util.getUser(answers.select_account)
-						const T = new TwitBot(confd)
-						const msg = util.spinnerMsg(`Twitbot working.. `)
+						const T = new TweetLite(confd)
+						const msg = util.spinnerMsg(`TweetLite working.. `)
 						if (answers.send === 'Yes' && answers.message) {
 							const followersList = await T.extra.fullFollowers()
 							const list = followersList
@@ -169,7 +169,7 @@ export default function (cmd, extra, version) {
 						process.exit(1) // eslint-disable-line xo/no-process-exit
 					}
 				} else {
-					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
+					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
 				}
 			})()
 			break
@@ -179,9 +179,9 @@ export default function (cmd, extra, version) {
 					try {
 						const answers = await util.prompt('unfollowlist')
 						const confd = util.getUser(answers.select_account)
-						const T = new TwitBot(confd)
+						const T = new TweetLite(confd)
 						if (answers.type === 'Yes') {
-							const msg = util.spinnerMsg(`Twitbot working.. `)
+							const msg = util.spinnerMsg(`TweetLite working.. `)
 							const fullListids = await T.extra.fullFollowers()
 							const result = await T.extra.fullUserDestroy(fullListids)
 							clearInterval(msg)
@@ -192,7 +192,7 @@ export default function (cmd, extra, version) {
 						process.exit(1) // eslint-disable-line xo/no-process-exit
 					}
 				} else {
-					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
+					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
 				}
 			})()
 			break
@@ -252,7 +252,7 @@ export default function (cmd, extra, version) {
 							actionList.push(util.actionFavorite())
 						}
 
-						const T = new TwitBot(confd)
+						const T = new TweetLite(confd)
 
 						const blocks = await T.extra.fullBlocks()
 
@@ -264,7 +264,7 @@ export default function (cmd, extra, version) {
 						actionBlacklist.push(util.notActionBlocks(blocks))
 
 						const stream = T.tweetStream({track: query})
-						const msg = util.spinnerMsg(`Twitbot working.. `)
+						const msg = util.spinnerMsg(`TweetLite working.. `)
 						stream.on('tweet', twet => {
 							util.control(twet, actionBlacklist).then(result => {
 								if (result) {
@@ -286,7 +286,7 @@ export default function (cmd, extra, version) {
 						process.exit(1) // eslint-disable-line xo/no-process-exit
 					}
 				} else {
-					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
+					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
 				}
 			})()
 			break
@@ -298,7 +298,7 @@ export default function (cmd, extra, version) {
 							const {src, account} = extra
 							const args = omit(extra, ['src'])
 							const confd = util.getUser(account)
-							const T = new TwitBot(confd)
+							const T = new TweetLite(confd)
 
 							const extraMiddleware = require(src)
 
@@ -314,7 +314,7 @@ export default function (cmd, extra, version) {
 						process.exit(1) // eslint-disable-line xo/no-process-exit
 					}
 				} else {
-					console.log(`${clor.red('First, you must define an account  [ > twitbot new]')}`)
+					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
 				}
 			})()
 			break

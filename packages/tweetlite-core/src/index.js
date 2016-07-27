@@ -9,15 +9,15 @@ import debug from 'debug'
 import method from './method'
 import * as util from './util'
 
-const log = debug('twitbot:core')
+const log = debug('tweetlite:core')
 /**
- *  TwitBotCore Class.
+ *  TweetLiteCore Class.
  *  new TwitBot({})
  */
 
-export default class TwitBot {
+export default class TweetLite {
 	/*
-   * Initialize a new `TwitBot`.
+   * Initialize a new `TweetLite`.
    *
    * @api public
    */
@@ -39,12 +39,12 @@ export default class TwitBot {
 	/**
    * Example:
    *
-   *    twitbot.use({hello:{
+   *    tweetlite.use({hello:{
 	 *			path: 'search/tweets',
 	 *			method: 'get'
  	 *     }})
 	 *		or
-	 *		twitbot.use(() => {
+	 *		tweetlite.use(() => {
 	 *			return myfunc(){
 	 *				console.log('hey')
 	 *			}
@@ -71,7 +71,7 @@ export default class TwitBot {
 
 		/**
 	   * extramodules injection
-		 * @return {TwitBot} self
+		 * @return {TweetLite} self
 	   * @api private
 	   */
 	extraModules() {

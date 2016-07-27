@@ -1,7 +1,7 @@
 {
-  "name": "twitbot-monorepo",
+  "name": "tweetlite-monorepo",
   "version": "0.1.0",
-  "homepage": "https://github.com/c0b41/twitbot",
+  "homepage": "https://github.com/TweetLite/tweetlite",
   "license": "MIT",
   "private": true,
   "scripts": {

@@ -4,47 +4,47 @@
 
 # Install
 ```sh
-npm install -g twitbot@0.3.0
+npm install -g tweetlite@1.0.0
 ```
 # Usage
 User add
 ```sh
-twitbot profile
+tweetlite profile
 ```
 
 User remove
 ```sh
-twitbot flush
+tweetlite flush
 ```
 
-Twitbot version
+Tweetlite version
 ```sh
-twitbot version
+tweetlite version
 ```
 
 Search keywords, followed users, favorited twet
 ```sh
-twitbot search
+tweetlite search
 ```
 
-Twitbot automate message
+Tweetlite automate message
 ```sh
-twitbot message
+tweetlite message
 ```
 
 Unfavorite all yours favorites
 ```sh
-twitbot unfavorite
+tweetlite unfavorite
 ```
 
 Unfollowed all nonfollowers users
 ```sh
-twitbot unfollow
+tweetlite unfollow
 ```
 
 Follow live tweting keywords and follow,favorites
 ```sh
-twitbot watch
+tweetlite watch
 ```
 
 | params        | value         |
@@ -91,18 +91,18 @@ exports.blacklist = (args) => { // must be exports blacklist
 ```
 Run your middleware
 ```sh
-twitbot watch src=~/drop/twitter-retwet/index.js --account=johndoe --blockid=1243434
+tweetlite watch src=~/drop/twitter-retwet/index.js --account=johndoe --blockid=1243434
 ```
 
 
-Your twitbot middleware
+Your tweetlite middleware
 ```sh
-twitbot use
+tweetlite use
 ```
 | params        | value         |
 | ------------- |:-------------:|
 | account     | johndoe      |
-| src | ~/twitbot-bumps      |
+| src | ~/tweetlite-bumps      |
 
 ### Write Yours middlewares
 
@@ -127,21 +127,21 @@ twitbot use
 ```
 Run your middleware
 ```sh
-twitbot use src=~/drop/twitter-bumps/index.js --account=johndoe --yolo=true
+tweetlite use src=~/drop/twitter-bumps/index.js --account=johndoe --yolo=true
 ```
 
-## Twitbot middlewares
-[twitbot-automate](https://github.com/c0b41/twitbot-automate)
-[twitbot-moco](https://github.com/c0b41/twitbot-moco)
-[twitbot-nonfollowers]()
+## Tweetlite middlewares
+[tweetlite-automate](https://github.com/c0b41/twitbot-automate)
+[tweetlite-moco](https://github.com/c0b41/twitbot-moco)
+[tweetlite-nonfollowers]()
 
-## Twitbot Debug
-- twitbot:middleware
-- twitbot:action
-- twitbot:core
-- twitbot:core:util
-- twitbot:cli
+## Tweetlite Debug
+- tweetlite:middleware
+- tweetlite:action
+- tweetlite:core
+- tweetlite:core:util
+- tweetlite:cli
 
 ```sh
-env DEBUG="twitbot:cli" twitbot search
+env DEBUG="tweetlite:cli" tweetlite search
 ```

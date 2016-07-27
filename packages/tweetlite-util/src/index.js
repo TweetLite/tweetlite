@@ -10,21 +10,21 @@ import debug from 'debug'
 
 import * as question from './question'
 
-const log = debug('twitbot:middleware')
-const actionlog = debug('twitbot:action')
+const log = debug('tweetlite:middleware')
+const actionlog = debug('tweetlite:action')
 const spinner = Spinners.moon
-const twitbotSettings = nconf
+const tweetliteSettings = nconf
 
-twitbotSettings.file({file: path.join(__dirname, '..', '.twitbotrc')})
+tweetliteSettings.file({file: path.join(__dirname, '..', '.tweetliterc')})
 
 export function help() {
 	return `
-	${clor.yellow('	TWİTBOT ')}
+	${clor.yellow('	TweetLite ')}
 	profile : ${clor.cyan('Account used for identification.')}
 	help : ${clor.cyan('Used to display the Help command.')}
 	search : ${clor.cyan('Bots used to start operations.')}
 	message : ${clor.cyan('It sends a message to all followers.')}
-	version : ${clor.cyan('It shows the version of TWİTBOT. ')}
+	version : ${clor.cyan('It shows the version of TweetLite. ')}
 	unfollow : ${clor.cyan('Unfollow used to initiate operations. ')}
 	unfavorite : ${clor.cyan('Unfollow used to initiate operations. ')}
 	flush : ${clor.cyan('Flushed user account info')}
@@ -37,7 +37,7 @@ export function prompt(name, choices) {
 	const ques = question[name] // eslint-disable-line import/namespace
 
 	if (['search', 'watch', 'accountlist', 'unfollowlist', 'messagelist'].indexOf(name) !== -1) {
-		ques[0].choices = _.keys(twitbotSettings.get('users'))
+		ques[0].choices = _.keys(tweetliteSettings.get('users'))
 		if (choices) {
 			choices.forEach(item => {
 				ques[item.index][item.key] = item.values
@@ -49,18 +49,18 @@ export function prompt(name, choices) {
 }
 
 export function checkUser() {
-	return (_.keys(twitbotSettings.get('users')).length > 0)
+	return (_.keys(tweetliteSettings.get('users')).length > 0)
 }
 
 export function getUser(name) {
-	return twitbotSettings.get(`users:${name}`)
+	return tweetliteSettings.get(`users:${name}`)
 }
 
 export function getUsers() {
-	return twitbotSettings.get(`users`)
+	return tweetliteSettings.get(`users`)
 }
 
-export function settingsSave(key, val, conf = twitbotSettings) {
+export function settingsSave(key, val, conf = tweetliteSettings) {
 	return new Promise((resolve, reject) => {
 		conf.set(key, val)
 		conf.save(err => {
@@ -180,6 +180,6 @@ export function action(twet, args, context, ...middlewares) {
 	})
 }
 
-export {twitbotSettings}
+export {tweetliteSettings}
 
 export {question}

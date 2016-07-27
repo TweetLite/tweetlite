@@ -1,16 +1,16 @@
 ## Install
 
 ```
-npm install --save twitbot-core@0.1.0
+npm install --save tweetlite-core@0.1.0
 ```
 
 ## Usage
 
 ```js
 
-import Twitbot from 'twitbot-core';
+import TweetLite from 'tweetlite-core';
 
-const TT = new Twitbot({
+const TT = new TweetLite({
 	consumer_key: "xx",
 	consumer_secret: "xxx",
 	access_token: "xxx",
@@ -27,12 +27,12 @@ const TT = new Twitbot({
 | access_token_secret | xx      |
 | timeout | xx     |
 
-### Twitbotcore Methods
+### Tweetlitecore Methods
 [All Methods](./src/method.js)
 
 [Extra Methods](./src/index.js?#LF-78-208)
 
-## Twitbot use
+## Tweetlite use
 
 ```js
 TT.use(() => {

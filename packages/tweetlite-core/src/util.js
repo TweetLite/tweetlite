@@ -4,11 +4,11 @@
 import _ from 'lodash'
 import debug from 'debug'
 
-const log = debug('twitbot:core:util')
+const log = debug('tweetlite:core:util')
 const error_codes = [32, 34, 64, 68, 88, 89, 92, 130, 131, 135, 136, 161, 179, 185, 187, 215, 226, 231, 251, 261, 271, 272, 354] // eslint-disable-line camelcase
 
 /**
- *  TwitBotCore inject method utility.
+ *  TweetLiteCore inject method utility.
  *  @param {Object} methods
  *  @api public
  */
@@ -21,7 +21,7 @@ export function inject(methods) {
 				return this.T.stream(methods[name].path, params || {})
 			}
 			return new Promise((resolve, reject) => {
-				log(`Twitbot ${name} working, params ${JSON.stringify(params || {})}`)
+				log(`TweetLite ${name} working, params ${JSON.stringify(params || {})}`)
 				this.T[methods[name].method](methods[name].path, params || {}, (err, data) => {
 					setTimeout(() => {
 						if (err && err.statusCode !== 403) {
@@ -42,7 +42,7 @@ export function inject(methods) {
 	})
 }
 /**
- *  TwitBotCore nextCursor funcion.
+ *  TweetLiteCore nextCursor funcion.
  *  @param {Object} opt
  *  @param {String} method
  *  @return {Promise}
@@ -81,7 +81,7 @@ export function nextCursor(opt, method) {
 	})
 }
 /**
- *  TwitBotCore maxId funcion.
+ *  TweetLiteCore maxId funcion.
  *  @param {Object} opt
  *  @param {String} method
  *  @return {Promise}
@@ -117,7 +117,7 @@ export function maxId(opt, method) {
 }
 
 /**
- *  TwitBotCore fullSearch funcion.
+ *  TweetLiteCore fullSearch funcion.
  *  @param {Object} opt
  *  @return {Promise}
  *  @api public

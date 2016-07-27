@@ -1,7 +1,7 @@
 {
-  "name": "twitbot-util",
+  "name": "tweetlite-util",
   "version": "0.1.0-beta14",
-  "description": "twitbot-util package",
+  "description": "tweetlite-util package",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rimraf ./dist",
@@ -28,18 +28,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/c0b41/twitbot.git"
+    "url": "git+https://github.com/TweetLite/tweetlite.git"
   },
   "keywords": [
-    "twitbot",
-    "twitbot-util"
+    "tweetlite",
+    "tweetlite-util"
   ],
   "author": "c0b41",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/c0b41/twitbot/issues"
+    "url": "https://github.com/TweetLite/tweetlite"
   },
-  "homepage": "https://github.com/c0b41/twitbot#readme",
+  "homepage": "https://github.com/TweetLite/tweetlite#readme",
   "devDependencies": {
     "ava": "^0.15.2",
     "babel-cli": "^6.9.0",
