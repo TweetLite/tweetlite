@@ -36,12 +36,13 @@
   "dependencies": {
     "minimist": "^1.2.0",
     "object.omit": "^2.0.0",
-    "tweetlite-cli": "0.1.0-beta28",
-    "tweetlite-core": "0.1.0-beta8"
+    "tweetlite-cli": "*",
+    "tweetlite-core": "*"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
     "babel-plugin-add-module-exports": "^0.1.4",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-preset-es2015": "^6.9.0",
     "rimraf": "^2.5.2",
     "xo": "^0.12.1"

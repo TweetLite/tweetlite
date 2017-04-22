@@ -56,7 +56,7 @@
     "debug": "^2.2.0",
     "loud-rejection": "^1.5.0",
     "object.omit": "^2.0.0",
-    "tweetlite-core": "0.1.0-beta8",
-    "tweetlite-util": "0.1.0-beta14"
+    "tweetlite-core": "*",
+    "tweetlite-util": "*"
   }
 }
