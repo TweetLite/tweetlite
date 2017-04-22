@@ -1,6 +1,6 @@
 {
   "name": "tweetlite",
-  "version": "0.3.0-beta29",
+  "version": "1.0.0",
   "description": "Twitter bots for cli..",
   "main": "./dist/index.js",
   "scripts": {

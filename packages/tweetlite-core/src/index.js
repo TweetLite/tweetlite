@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 import 'babel-polyfill'
-import Twit from 'twit'
+import Twit from 'twit-core'
 import _ from 'lodash'
 import promiseSeries from 'promise-series2'
 import debug from 'debug'
@@ -12,7 +12,7 @@ import * as util from './util'
 const log = debug('tweetlite:core')
 /**
  *  TweetLiteCore Class.
- *  new TwitBot({})
+ *  new TweetLite({})
  */
 
 export default class TweetLite {

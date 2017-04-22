@@ -1,6 +1,6 @@
 {
   "name": "tweetlite-util",
-  "version": "0.1.0-beta14",
+  "version": "1.0.0",
   "description": "tweetlite-util package",
   "main": "dist/index.js",
   "scripts": {

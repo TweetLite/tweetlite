@@ -112,7 +112,7 @@ tweetlite use
 
      console.log(args); // { yolo:true }
 
-     this.search({q:'#yolo'}).then( data => { // twitbot avaible this
+     this.search({q:'#yolo'}).then( data => { // tweetlite avaible this
        console.log(data)
      })
 
@@ -131,8 +131,8 @@ tweetlite use src=~/drop/twitter-bumps/index.js --account=johndoe --yolo=true
 ```
 
 ## Tweetlite middlewares
-[tweetlite-automate](https://github.com/c0b41/twitbot-automate)
-[tweetlite-moco](https://github.com/c0b41/twitbot-moco)
+[tweetlite-automate](https://github.com/TweetLite/tweetlite-automate)
+[tweetlite-moco](https://github.com/TweetLite/tweetlite-moco)
 [tweetlite-nonfollowers]()
 
 ## Tweetlite Debug
