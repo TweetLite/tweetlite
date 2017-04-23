@@ -1,6 +1,6 @@
 {
   "name": "tweetlite-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "tweetlite-core package",
   "main": "dist/index.js",
   "scripts": {
@@ -45,7 +45,7 @@
     "debug": "^2.2.0",
     "lodash": "^4.13.1",
     "promise-series2": "^1.1.0",
-    "twit-core": "*"
+    "twit-core": "latest"
   },
   "devDependencies": {
     "ava": "^0.15.2",
