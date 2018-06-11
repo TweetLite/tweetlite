@@ -1,4 +1,4 @@
-import clor from 'clor'
+import clor from 'clorox'
 import loudRejection from 'loud-rejection'
 import TweetLite from 'tweetlite-core'
 import * as util from 'tweetlite-util'

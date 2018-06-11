@@ -968,10 +968,6 @@ clor@^2.0.2:
   dependencies:
     ansi-styles "^2.0.1"
 
-clorox@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/clorox/-/clorox-1.0.3.tgz#6fa63653f280c33d69f548fb14d239ddcfa1590d"
-
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
@@ -3623,6 +3619,17 @@ tunnel-agent@^0.6.0:
   resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.6.0.tgz#27a5dea06b36b04a0a9966774b290868f0fc40fd"
   dependencies:
     safe-buffer "^5.0.1"
+
+tweetlite-cli@*:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/tweetlite-cli/-/tweetlite-cli-1.0.0.tgz#4d008f05f16f170fb0eb1f822e5c057021523881"
+  dependencies:
+    clor "^2.0.2"
+    debug "^2.2.0"
+    loud-rejection "^1.5.0"
+    object.omit "^2.0.0"
+    tweetlite-core "*"
+    tweetlite-util "*"
 
 tweetlite-core@*:
   version "1.0.1"

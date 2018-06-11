@@ -1,6 +1,6 @@
 {
   "name": "tweetlite-cli",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "tweetlite-cli package",
   "main": "dist/index.js",
   "scripts": {
@@ -11,18 +11,18 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
-    "babel-jest": "^22.4.4",
+    "babel-jest": "^23.0.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-env": "^1.6.1",
-    "jest": "^22.4.4",
-    "jest-cli": "^22.4.4",
+    "jest": "^23.1.0",
+    "jest-cli": "^23.1.0",
     "regenerator-runtime": "^0.11.1"
   },
   "dependencies": {
-    "clor": "^2.0.2",
-    "debug": "^2.2.0",
+    "clorox": "^1.0.3",
+    "debug": "^3.1.0",
     "loud-rejection": "^1.5.0",
-    "object.omit": "^2.0.0",
+    "object.omit": "^3.0.0",
     "tweetlite-core": "*",
     "tweetlite-util": "*"
   },
@@ -32,5 +32,5 @@
   ],
   "author": "c0b41",
   "license": "MIT",
-  "homepage": "https://github.com/TweetLite/tweetlite#readme"
+  "homepage": "https://github.com/c0b41/tweetlite"
 }

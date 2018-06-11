@@ -1,5 +1,5 @@
 import * as path from 'path'
-import clor from 'clor'
+import clor from 'clorox'
 import keys from 'lodash.keys'
 import flattendeep from 'lodash.flattendeep'
 import has from 'lodash.has'
