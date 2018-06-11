@@ -1,6 +1,6 @@
 {
   "name": "tweetlite-cli",
-  "version": "1.2.0",
+  "version": "0.1.1-0.2.0-beta.0.0",
   "description": "tweetlite-cli package",
   "main": "dist/index.js",
   "scripts": {
@@ -30,6 +30,9 @@
     "tweetlite",
     "tweetlite-cli"
   ],
+  "engines": {
+    "node": ">=6"
+  },
   "author": "c0b41",
   "license": "MIT",
   "homepage": "https://github.com/c0b41/tweetlite"

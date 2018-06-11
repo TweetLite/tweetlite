@@ -1,6 +1,6 @@
 {
   "name": "tweetlite",
-  "version": "1.2.0",
+  "version": "0.1.1-0.2.0-beta.0.0",
   "description": "Twitter bots for cli..",
   "main": "./dist/index.js",
   "scripts": {
@@ -34,6 +34,9 @@
     "cli",
     "follow"
   ],
+  "engines": {
+    "node": ">=6"
+  },
   "author": "c0b41",
   "license": "MIT",
   "homepage": "https://github.com/c0b41/tweetlite"
