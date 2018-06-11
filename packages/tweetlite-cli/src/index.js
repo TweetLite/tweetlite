@@ -25,7 +25,7 @@ export default function (cmd, extra, version) {
 					}
 				} catch (err) {
 					log(err)
-					process.exit(1) // eslint-disable-line xo/no-process-exit
+					process.exit(1)
 				}
 			})()
 			break
@@ -92,7 +92,7 @@ export default function (cmd, extra, version) {
 						}
 					} catch (err) {
 						log(err)
-						process.exit(1) // eslint-disable-line xo/no-process-exit
+						process.exit(1) 
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
@@ -113,7 +113,7 @@ export default function (cmd, extra, version) {
 						console.log(`  ${clor.green('All favorites removed')}`)
 					} catch (err) {
 						log(err)
-						process.exit(1) // eslint-disable-line xo/no-process-exit
+						process.exit(1)
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
@@ -136,7 +136,7 @@ export default function (cmd, extra, version) {
 						console.log(`  ${clor.green(msg)}`)
 					} catch (err) {
 						log(err)
-						process.exit(1) // eslint-disable-line xo/no-process-exit
+						process.exit(1)
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
@@ -166,7 +166,7 @@ export default function (cmd, extra, version) {
 						}
 					} catch (err) {
 						log(err)
-						process.exit(1) // eslint-disable-line xo/no-process-exit
+						process.exit(1)
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
@@ -189,7 +189,7 @@ export default function (cmd, extra, version) {
 						}
 					} catch (err) {
 						log(err)
-						process.exit(1) // eslint-disable-line xo/no-process-exit
+						process.exit(1)
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
@@ -283,7 +283,7 @@ export default function (cmd, extra, version) {
 						})
 					} catch (err) {
 						log(err)
-						process.exit(1) // eslint-disable-line xo/no-process-exit
+						process.exit(1)
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
@@ -311,7 +311,7 @@ export default function (cmd, extra, version) {
 						}
 					} catch (err) {
 						log(err)
-						process.exit(1) // eslint-disable-line xo/no-process-exit
+						process.exit(1)
 					}
 				} else {
 					console.log(`${clor.red('First, you must define an account  [ > TweetLite new]')}`)
