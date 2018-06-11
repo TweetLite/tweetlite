@@ -2,6 +2,8 @@
   <img src="./logo.png" />
 </p>
 
+[![Circle Build Status](https://img.shields.io/circleci/project/c0b41/tweetlite.svg?style=flat-square)](https://circleci.com/gh/c0b41/tweetlite) 
+
 # Install
 ```sh
 npm install -g tweetlite@1.0.0
