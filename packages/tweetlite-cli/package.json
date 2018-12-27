@@ -1,6 +1,6 @@
 {
   "name": "tweetlite-cli",
-  "version": "5.0.0",
+  "version": "2.0.0",
   "description": "tweetlite-cli package",
   "main": "dist/index.js",
   "scripts": {
