@@ -37,7 +37,7 @@ const TT = new TweetLite({
 ```js
 TT.use(() => {
 	return fuckTwet(params){
-			// twitbot avaible area
+			// tweetlite avaible area
 			return this.followers()
 	}
 }) // now TT.extra.fuckTwet avaible

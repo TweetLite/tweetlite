@@ -30,8 +30,8 @@ export function help() {
 	unfollow : ${clor.cyan('Unfollow used to initiate operations. ')}
 	unfavorite : ${clor.cyan('Unfollow used to initiate operations. ')}
 	flush : ${clor.cyan('Flushed user account info')}
-	watch : ${clor.cyan('Watched twitbot stream ')}
-	use : ${clor.cyan('Using custom twitbot middleware')}
+	watch : ${clor.cyan('Watched tweetlite stream ')}
+	use : ${clor.cyan('Using custom tweetlite middleware')}
 	`
 }
 
@@ -117,6 +117,12 @@ export function notActionHimself(username) {
 export function okActionLanguage(lang) {
   return function okActionLanguageFN(twet) {
     return twet.user.lang === lang && twet.lang === lang
+  }
+}
+
+export function notActionNSWFTwet(){
+  return function notActionNSWFTwetFN(twet) {
+    return twet.possibly_sensitive === false
   }
 }
 

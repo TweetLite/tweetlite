@@ -130,8 +130,14 @@ export function maxId(opt, method) {
         if (data.length === 0) {
           return next(null, dump)
         }
-        query.max_id = data[data.length - 1].id
-        loadAll(query, next)
+        
+        if (query.max_id !== data[data.length - 1].id){
+          query.max_id = data[data.length - 1].id
+          loadAll(query, next)
+        } else {
+          return next(null, dump)
+        }
+        
       })
       .catch(err => {
         next(err, null)

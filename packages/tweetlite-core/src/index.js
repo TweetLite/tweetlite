@@ -26,7 +26,7 @@ export default class TweetLite {
     obj.timeout_ms = obj.timeout || 60 * 1000
 
     this.T = new Twit(obj)
-    log(`Created TwitBot function`)
+    log(`Created Tweetlite function`)
     this.extra = {}
     this.utils = {}
     this.extraModules()

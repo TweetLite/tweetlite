@@ -22,10 +22,10 @@ import {
 import {
 	actionFavorite,
 	actionUserFollow,
-} from 'twitbot-util'; // some watch middleware functions
+} from 'tweetlite-util'; // some watch middleware functions
 
 import {
-	twitbotSettings,
+	tweetliteSettings,
 	question,
 	prompt,
 	spinnerMsg
