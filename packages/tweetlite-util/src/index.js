@@ -189,7 +189,7 @@ export function actionUserFollow() {
 }
 
 export function action(twet, args, context, ...middlewares) {
-  flattenDeep(middlewares).forEach(middleware => {
+  flattendeep(middlewares).forEach(middleware => {
     ;(async () => {
       try {
         const result = await middleware.call(context, twet, args)
