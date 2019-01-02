@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import keys from 'lodash.keys'
 import has from 'lodash.has'
 import flattenDeep from 'lodash.flattendeep'
